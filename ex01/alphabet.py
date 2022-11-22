@@ -56,4 +56,5 @@ if __name__ == "__main__":
         if num == i:
             break
     ed = datetime.datetime.now()
+
     print(f"{i}回目、time:{(ed-st)}  成功です")
