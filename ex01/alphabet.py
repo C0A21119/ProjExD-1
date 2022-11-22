@@ -43,15 +43,18 @@ def much(ans_list):
 
 if __name__ == "__main__":
     f = True
+    i = 1
     num = 3
     st = datetime.datetime.now()
     poit = random.randint(3,10)
     tagt = random.randint(1,4)
-    for i in range(num):
+    while f:
         print(f"{i}回目")
         tagt_list = code(poit)
         ans_list = ans(tagt,tagt_list)
         f = much(ans_list)
         i += 1
+        if num == i:
+            break
     ed = datetime.datetime.now()
-    print(f"{i}回目、time:{ed-st}  成功です")
+    print(f"{i}回目、time:{(ed-st)}  成功です")
