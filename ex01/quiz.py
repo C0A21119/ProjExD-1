@@ -1,17 +1,29 @@
-if __name__ == "__main__":
-    import random
+import random
+import datetime
+def shutudai(qa_list):
+    qa = random.choice(qa_list)
+    print("問題"+qa["q"])
+    return qa["a"]
 
-    def shutudai(a):
-        QS = ["サザエの旦那の名前は？","カツオの妹の名前は？","タラオはカツオから見てどんな関係？"]
-        return QS[a]
-    def kaitou(a,ans):
-        ANS = [["マスオ","ますお"],["ワカメ","わかめ"],["甥","おい","甥っ子","おいっこ"]]
-        if ans in ANS[a]:
-            return "正解！！！"
-        else:
-            return "出直してこい"
 
-    a = random.randint(0,2)
-    print(f"問題：\n{shutudai(a)}")
+def kaitou(ans_list):
     ans = input("答えるんだ：")
-    print(kaitou(a,ans))
+    if ans in ans_list:
+        print("正解！！！")
+    else:
+        print("出直してこい")
+
+
+if __name__ == "__main__":
+    qa_list = [
+        {"q":"サザエの旦那の名前は？","a":["マスオ","ますお"]},
+        {"q":"カツオの妹の名前は？","a":["ワカメ","わかめ"]},
+        {"q":"タラオはカツオから見てどんな関係？","a":["甥","おい","甥っ子","おいっこ"]}
+    ]
+
+
+    ans_list = shutudai(qa_list)
+    st = datetime.datetime.now()
+    kaitou(ans_list)
+    ed = datetime.datetime.now()
+    print((ed-st).seconds)
