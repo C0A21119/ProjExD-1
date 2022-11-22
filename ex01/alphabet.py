@@ -8,7 +8,6 @@ def code(n):
     print("対象文字：")
     print(" ".join(subject_list))
     return subject_list
-
 def ans(n,subject_list):
     ans_list = []
     for i in range(n):
