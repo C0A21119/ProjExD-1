@@ -22,7 +22,7 @@ def button_tan():
     entry.insert(tk.END,res)
 
 def button_π():
-    res = math.pi()
+    res = "3.14"
     entry.insert(tk.END,res)
 
 def button_x2():
