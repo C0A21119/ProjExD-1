@@ -5,7 +5,14 @@ import tkinter.messagebox as tkm
 def button_click(event):
     btn = event.widget
     txt = btn["text"]
-    entry.insert(tk.END,f"{txt}")
+    if txt == "=":
+        res = eval(entry.get())
+        entry.delete(0,tk.END)
+        entry.insert(tk.END,res)
+#    elif txt == "C":
+#        entry.insert(tk.END,res)
+    else:
+        entry.insert(tk.END,txt)
 
 
 root = tk.Tk()
@@ -24,9 +31,10 @@ for num in range(9,-1,-1):
         k = 0
 
 
-operatas = ["+","="]
+operatas = ["+","=","C","x","÷"]
 for ope in operatas:
     button = tk.Button(root,text=f"{ope}",font=("",30),width=4,height=2)
+    button.bind("<1>",button_click)
     button.grid(row=j, column=k)
     k += 1
     if k % 3 == 0:
