@@ -90,7 +90,7 @@ root.geometry("575x600")
 j, k = 1, 0
 for num in ["sin","cos","tan","√","π",7,8,9,"÷","x^2",4,5,6,"x","x!",1,2,3,"-","1/x",0,".","=","+","C"]:
     button = tk.Button(root,text=f"{num}",font=("",30),width=5,height=2,bg="lightgrey")
-    button.bind("<1>",button_click)
+    button.bind("<1>",button_click)#右クリックがされたとき
     button.grid(row=j, column=k)
     k +=1
     if k % 5 == 0:
