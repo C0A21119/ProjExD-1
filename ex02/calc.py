@@ -101,5 +101,4 @@ entry = tk.Entry(root,justify="right",width=20,font=("",40))
 entry.grid(row=0,column=0, columnspan=5)
 
 
-
 root.mainloop()
