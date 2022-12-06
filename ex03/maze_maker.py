@@ -16,10 +16,11 @@ def make_maze(yoko, tate):
             else:
                 rnd = random.randint(0, 3)
             maze_lst[x+YP[rnd]][y+XP[rnd]] = 1
+    maze_lst[14][7] = 2
     return maze_lst
 
 def show_maze(canvas, maze_lst):
-    color = ["white", "gray"]
+    color = ["white", "gray", "red", "green"]
     for x in range(len(maze_lst)):
         for y in range(len(maze_lst[x])):
             canvas.create_rectangle(x*100, y*100, x*100+100, y*100+100, fill=color[maze_lst[x][y]])
@@ -31,6 +32,8 @@ def print_maze(maze_lst):
         for j in i:
             if j == 1:
                 j = "■"
+            elif j == 2:
+                j = "△"
             else:
                 j = "□"
             print(j,end="")
@@ -39,4 +42,5 @@ def print_maze(maze_lst):
 #maze_makerテスト用
 if __name__ == "__main__":
     maze = make_maze(15,9)
+    print(maze)
     print_maze(maze)
