@@ -3,16 +3,19 @@ import tkinter.messagebox as tkm
 import random
 import maze_maker as mm
 
+#入出力
 def key_down(event):
     global key
     key = event.keysym
     if now == "-":
         root.after(100, time_time)
 
+#入出力
 def key_up(event):
     global key
     key = ""
 
+#ゲームモード
 def button_click(event):
     global mode
     if mode == 0:
@@ -22,6 +25,7 @@ def button_click(event):
         mode = 0
         canvas.delete("text1")
 
+#移動
 def main_proc():
     global cx, cy, mx, my, key
     key_pressed = ["Up","Down","Right","Left"]
@@ -49,7 +53,7 @@ def main_proc():
     enemy_move()
     root.after(100, main_proc)
 
-
+#エネミー
 def enemy_move():
     global maze_list, canvas, mx, my, emx, emy, cx, cy
     e_moves=[[0,-1],[0,1],[1,0],[-1,0]]
@@ -80,7 +84,7 @@ def enemy_move():
             tkm.showinfo("捕獲成功", f"捕獲 time{now}")
             exit()
 
-
+#タイマー
 def time_time():
     global now, tmr
     canvas.delete("text")
@@ -89,6 +93,7 @@ def time_time():
     canvas.create_text(250, 0, text=now,anchor="ne", font=("",50), tag="text")
     jid = root.after(1000, time_time)
 
+#メイン
 if __name__ == "__main__":
     root = tk.Tk()
     root.title("迷えるこうかとん")
