@@ -17,6 +17,7 @@ def make_maze(yoko, tate):
                 rnd = random.randint(0, 3)
             maze_lst[x+YP[rnd]][y+XP[rnd]] = 1
     maze_lst[14][7] = 2
+    maze_lst[1][1] = 3
     return maze_lst
 
 def show_maze(canvas, maze_lst):

@@ -13,6 +13,13 @@ def key_up(event):
     global key
     key = ""
 
+def button_click(event):
+    global mode
+    if mode == 0:
+        mode = 1
+    else:
+        mode = 0
+
 def main_proc():
     global cx, cy, mx, my, key
     key_pressed = ["Up","Down","Right","Left"]
@@ -41,7 +48,7 @@ def main_proc():
     root.after(100, main_proc)
 
 
-def enemy_move(): #enemyを動かす関数
+def enemy_move():
     global maze_list, canvas, mx, my, emx, emy, cx, cy
     e_moves=[[0,-1],[0,1],[1,0],[-1,0]]
     e_move = random.choice(["Up", "Down", "Left", "Right"])
@@ -65,7 +72,11 @@ def enemy_move(): #enemyを動かす関数
         canvas.coords("kokaton", cx, cy)
         canvas.coords("enemey",ex, ey)
         canvas.delete("text")
-        tkm.showinfo("ゴール失敗", f"GOALOVER time{now}")
+        if mode == 0:
+            tkm.showinfo("ゴール失敗", f"GOALOVER time{now}")
+        elif mode == 1:
+            tkm.showinfo("捕獲成功", f"捕獲 time{now}")
+            exit()
 
 
 def time_time():
@@ -98,9 +109,10 @@ if __name__ == "__main__":
     now = "-"
     tmr = 0
     canvas.create_text(250, 0, text=now,anchor="ne", font=("",50),tag= "text")
-
+    mode = 0
     key = ""
     root.bind("<KeyPress>", key_down)
     root.bind("<KeyRelease>", key_up)
+    root.bind("<1>",button_click)
     main_proc()
     root.mainloop()
