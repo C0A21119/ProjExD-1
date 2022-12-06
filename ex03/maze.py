@@ -17,8 +17,10 @@ def button_click(event):
     global mode
     if mode == 0:
         mode = 1
+        canvas.create_text(1000, 10, text="捕獲モード",anchor="ne", font=("",50),tag= "text1")
     else:
         mode = 0
+        canvas.delete("text1")
 
 def main_proc():
     global cx, cy, mx, my, key
