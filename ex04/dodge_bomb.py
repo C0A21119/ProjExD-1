@@ -62,7 +62,7 @@ def main(st):
                 if event.key == pg.K_ESCAPE:
                     return
 
-        key_dct = pg.key.get_pressed()
+        key_dct = pg.key.get_pressed() #こうかとん移動操作
         key_type = [pg.K_UP,pg.K_DOWN,pg.K_LEFT,pg.K_RIGHT]
         MOVE_tipe = [[0,-1],[0,1],[-1,0],[1,0]]
         if check_bound(tori_rct, scrn_rct) != (1,1):
@@ -87,9 +87,9 @@ def main(st):
             bomb[1].move_ip(bomb[2], bomb[3])
             scrn_sfc.blit(bomb[0], bomb[1])
 
-            if bomb[1].colliderect(tori_rct):
+            if bomb[1].colliderect(tori_rct):#衝突判定
                 scrn_sfc.blit(bg_sfc,bg_rct)
-                scrn_sfc.blit(bakuhatu_sfc,tori_rct)
+                scrn_sfc.blit(bakuhatu_sfc,tori_rct)#爆発描写
                 pg.display.update()
                 return
 
@@ -100,8 +100,6 @@ def main(st):
         scrn_sfc.blit(text, [10, 10])
         pg.display.update()
         clock.tick(1000)
-
-
 
 if __name__ == "__main__":
     pg.init()
