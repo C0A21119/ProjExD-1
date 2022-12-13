@@ -5,12 +5,12 @@ import time
 import random
 import tkinter as tk
 
-def timer(st):
+def timer(st): # タイマー関数
     nowtm = time.time() - st
     nowtm//=1
     return int(nowtm)
 
-def check_bound(obj_rct,scr_rct):
+def check_bound(obj_rct,scr_rct): #衝突チェック関数
     yoko,tate = +1,+1
     if obj_rct.left < scr_rct.left or obj_rct.right > scr_rct.right:
         yoko = -1
@@ -18,7 +18,7 @@ def check_bound(obj_rct,scr_rct):
         tate = -1
     return yoko, tate
 
-def create_boms(scrn_rct, l):
+def create_boms(scrn_rct, l): #爆弾作成関数
     new_bomb_sfc = pg.Surface((20,20))
     new_bomb_sfc.set_colorkey((0, 0, 0))
     pg.draw.circle(new_bomb_sfc, (255, 0, 0), (10, 10), 10)
@@ -35,27 +35,30 @@ def main(st):
     bg_sfc = pg.image.load("fig/pg_bg.jpg")
     bg_rct = bg_sfc.get_rect()
 
+    bakuhatu_sfc = pg.image.load("fig/bakuhatsu.png") #爆発画像ロード
+    bakuhatu_sfc = pg.transform.rotozoom(bakuhatu_sfc,0, 0.2)
+
     tori_sfc = pg.image.load("fig/6.png")
     tori_sfc = pg.transform.rotozoom(tori_sfc, 0, 2.0)
     tori_rct = tori_sfc.get_rect()
     tori_rct.center = scrn_rct.width/2 ,scrn_rct.height/2
     scrn_sfc.blit(tori_sfc,tori_rct)
 
-    bomss = []
+    bomss = [] #爆弾リスト
     create_boms(scrn_rct,bomss)
 
     clock = pg.time.Clock()
     font = pg.font.Font(None, 50)
-    MOUSE_MODE = False
+    MOUSE_MODE = False #マウス操作モードフラグ
 
     while True:
         scrn_sfc.blit(bg_sfc,bg_rct)
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 return
-            elif event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
+            elif event.type == pg.MOUSEBUTTONDOWN and event.button == 1: #マウス操作モード判定
                 MOUSE_MODE = not MOUSE_MODE
-            elif event.type == pg.KEYDOWN:
+            elif event.type == pg.KEYDOWN:#エスケープキー終了
                 if event.key == pg.K_ESCAPE:
                     return
 
@@ -75,7 +78,7 @@ def main(st):
                     tori_rct.centery += MOVE_tipe[i][1]
         scrn_sfc.blit(tori_sfc,tori_rct)
 
-        for bomb in bomss:
+        for bomb in bomss: #爆弾操作
             if check_bound(bomb[1], scrn_rct) == (-1,1):
                 bomb[2] *= -1
             elif check_bound(bomb[1], scrn_rct) == (1,-1):
@@ -85,12 +88,15 @@ def main(st):
             scrn_sfc.blit(bomb[0], bomb[1])
 
             if bomb[1].colliderect(tori_rct):
+                scrn_sfc.blit(bg_sfc,bg_rct)
+                scrn_sfc.blit(bakuhatu_sfc,tori_rct)
+                pg.display.update()
                 return
 
-        if timer(st) > len(bomss)*5:
+        if timer(st) > len(bomss)*5: #爆弾作成判定
             create_boms(scrn_rct,bomss)
 
-        text = font.render(f"ScoreTime{timer(st)}", True, (0,0,0))
+        text = font.render(f"ScoreTime{timer(st)}", True, (0,0,0)) #スコア表示
         scrn_sfc.blit(text, [10, 10])
         pg.display.update()
         clock.tick(1000)
@@ -101,23 +107,22 @@ if __name__ == "__main__":
     pg.init()
     st = time.time()
     main(st)
-    pg.quit()
     root = tk.Tk()
     root.withdraw()
     score = timer(st)
-    with open('ex04/text.txt',mode = "r", encoding="UTF-8") as f:
-        for num in f.readline():
+    with open('ex04/text.txt',mode = "r", encoding="UTF-8") as file:# ハイスコア読み込み
+        for num in file.readline():
             print(type(num))
             HISCORE = int(num)
-            f.close
-    if score > HISCORE:
-        f = open('ex04/text.txt',mode = "w", encoding="UTF-8")
-        f.write(f"{score}")
-        f.close
+
+    if score > HISCORE:#ハイスコア判定と書き込み
+        with open('ex04/text.txt',mode = "w", encoding="UTF-8") as file:
+            file.write(f"{score}")
         tkm.showinfo("Hit", f"ハイスコア:{HISCORE}秒  生存時間:{score}秒")
         tkm.showinfo("Hit", "ハイスコア更新おめでとう！")
         sys.exit()
 
-    tkm.showinfo("Hit", f"ハイスコア:{HISCORE}秒  生存時間:{score}秒")
+    tkm.showinfo("Hit", f"ハイスコア:{HISCORE}秒  生存時間:{score}秒")#最終結果表示
     tkm.showinfo("Hit", "次も頑張ろう！")
+    pg.quit()
     sys.exit()
