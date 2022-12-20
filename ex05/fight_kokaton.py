@@ -137,6 +137,7 @@ class Bird(pg.sprite.Sprite): #こうかとんのクラス
 
 class Bomb(pg.sprite.Sprite):# 爆弾を生成するクラス
     speed = [-3,-2,-1,1,2,3]
+
     def __init__(self, color, rad, scrn:Screen):
         pg.sprite.Sprite.__init__(self)
         self.image = pg.Surface((2*rad, 2*rad))
