@@ -150,6 +150,14 @@ class Bomb(pg.sprite.Sprite):# 爆弾を生成するクラス
         scrn.blit(self.image, self.rect)
 
 
+class Text_blit():#テキスト描画クラス
+    def __init__(self):
+        self.font = pg.font.Font(None, 50)
+    def text(self,text1,scrn,xy):
+        text = self.font.render(text1, True, (0,0,0))
+        scrn.blit_text(text,xy)
+
+
 def check_bound(obj_rct,scr_rct): #衝突チェック関数
     yoko,tate = +1,+1
     if obj_rct.left < scr_rct.left or obj_rct.right > scr_rct.right:
@@ -172,6 +180,7 @@ def main():
     score_time = ScoreTime()
     timer = Timer()
     st = time.time()
+    text_blit = Text_blit()
     pg.time.set_timer(30, 1000)
     clock = pg.time.Clock()
     music.bgm()
@@ -180,8 +189,7 @@ def main():
     while True:
         scrn.blit()
         if FIGHT_MODE:
-            text = font.render(f"FIGHT_MODE", True, (0,0,0)) #ファイトモードの表示
-            scrn.blit_text(text,[1200,10])
+            text_blit.text("FIGHT_MODE",scrn , [1200,10])#ファイトモードの表示
             if (count >= 0
                     and pg.sprite.groupcollide(bird_grp,bomb_grp,dokilla=False, dokillb=True)):
                 count -= 1
@@ -200,8 +208,6 @@ def main():
             if (event.type == pg.MOUSEBUTTONDOWN
                     and event.button == 1): #マウス操作モード判定
                 bird.MOUSE_MODE = not bird.MOUSE_MODE
-                text = font.render("MOUSEMODE ON", True, (0,0,0))
-                scrn.blit_text(text, [700,10])
             if (event.type == pg.KEYUP
                     and event.key == pg.K_SPACE):
                 FIGHT_MODE = not FIGHT_MODE
@@ -212,9 +218,10 @@ def main():
                 bombs = Bomb((255, 0, 0), 10, scrn)
                 groop.add(bombs)
                 bomb_grp.add(bombs)
+        if bird.MOUSE_MODE:
+            text_blit.text("MOUSEMODE ON", scrn , [700,10])#マウスモードの表示
         times = timer.score_time(st)
-        text = font.render(f"ScoreTime{times}", True, (0,0,0)) #スコア表示
-        scrn.blit_text(text,[10,10])
+        text_blit.text(f"ScoreTime{times}", scrn , [10,10])#タイマーの表示
         pg.display.update()
         clock.tick(1000)
 
