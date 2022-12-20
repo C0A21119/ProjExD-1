@@ -169,19 +169,19 @@ def check_bound(obj_rct, scr_rct): #衝突チェック関数
 
 
 def main():
-    scrn = Screen("戦う！こうかとん", (1600, 900), "fig/pg_bg.jpg")
-    bird = Bird("fig/6.png", 2.0, (900, 400))
-    bombs = Bomb((255, 0, 0), 10, scrn)
+    scrn = Screen("戦う！こうかとん", (1600, 900), "fig/pg_bg.jpg")#スクリーン描画
+    bird = Bird("fig/6.png", 2.0, (900, 400))#こうかとん描画
+    bombs = Bomb((255, 0, 0), 10, scrn)#爆弾描画
     bomb_lst = [bombs]
     bird_grp = pg.sprite.Group(bird)
     bomb_grp = pg.sprite.Group(*bomb_lst)
-    groop = pg.sprite.Group(bird, *bomb_lst)
+    groop = pg.sprite.Group(bird, *bomb_lst)#グループ化
     font = pg.font.Font(None, 50)
-    music = Music()
-    score_time = ScoreTime()
-    timer = Timer()
+    music = Music()#ミュージック
+    score_time = ScoreTime()#スコア
+    timer = Timer()#タイマー
     st = time.time()
-    text_blit = Text_blit()
+    text_blit = Text_blit()#テキスト
     clock = pg.time.Clock()
     music.bgm()
     FIGHT_MODE = True
@@ -196,7 +196,7 @@ def main():
                 count -= 1
             elif count < 0:
                 FIGHT_MODE = False
-        else:
+        else:#通常
             if pg.sprite.groupcollide(bird_grp, bomb_grp, dokilla=True, dokillb=True):
                 bird.final_blit(scrn.sfc,"fig/bakuhatsu.png")
                 pg.display.update()
