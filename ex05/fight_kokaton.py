@@ -25,6 +25,7 @@ class Music():#ミュージッククラス
         pg.mixer.init(frequency = 44100)
         self.BGM = pg.mixer.Sound("music/春よ、強く美しく.mp3")
         self.EXPlOSION = pg.mixer.Sound("music/爆発2.mp3")
+
     def bgm(self):
         self.BGM.play(-1)
 
@@ -48,9 +49,17 @@ class ScoreTime(): #スコアクラス
             tkm.showinfo("Hit", f"ハイスコア:{self.HISCORE}秒  生存時間:{self.score_time}秒")
             tkm.showinfo("Hit", "ハイスコア更新おめでとう！")
             return
-
         tkm.showinfo("Hit", f"ハイスコア:{self.HISCORE}秒  生存時間:{self.score_time}秒")#最終結果表示
         tkm.showinfo("Hit", "次も頑張ろう！")
+
+
+class Text_blit():#テキスト描画クラス
+    def __init__(self):
+        self.font = pg.font.Font(None, 50)
+
+    def text(self, text1, scrn, xy):
+        text = self.font.render(text1, True, (0,0,0))
+        scrn.blit_text(text,xy)
 
 
 class Screen(pg.sprite.Sprite): #スクリーンと背景のクラス　　
@@ -124,7 +133,6 @@ class Bird(pg.sprite.Sprite): #こうかとんのクラス
                     if check_bound(self.rect, rct) != (1, 1):
                         self.rect.move_ip(-1*move[0], -1*move[1])
         scrn.blit(self.image, self.rect)
-        #self.blit(scrn)
 
 
 class Bomb(pg.sprite.Sprite):# 爆弾を生成するクラス
@@ -142,20 +150,13 @@ class Bomb(pg.sprite.Sprite):# 爆弾を生成するクラス
 
     def blit(self, scrn:Screen):
         scrn.sfc.blit(self.image, self.rect)
+
     def update(self, scrn:Screen):
         yoko, tate = check_bound(self.rect, scrn.rct)
         self.move_x *= yoko
         self.move_y *= tate
         self.rect.move_ip(self.move_x, self.move_y)
         scrn.blit(self.image, self.rect)
-
-
-class Text_blit():#テキスト描画クラス
-    def __init__(self):
-        self.font = pg.font.Font(None, 50)
-    def text(self,text1,scrn,xy):
-        text = self.font.render(text1, True, (0,0,0))
-        scrn.blit_text(text,xy)
 
 
 def check_bound(obj_rct,scr_rct): #衝突チェック関数
@@ -181,7 +182,6 @@ def main():
     timer = Timer()
     st = time.time()
     text_blit = Text_blit()
-    pg.time.set_timer(30, 1000)
     clock = pg.time.Clock()
     music.bgm()
     FIGHT_MODE = True
@@ -209,12 +209,12 @@ def main():
                     and event.button == 1): #マウス操作モード判定
                 bird.MOUSE_MODE = not bird.MOUSE_MODE
             if (event.type == pg.KEYUP
-                    and event.key == pg.K_SPACE):
+                    and event.key == pg.K_SPACE):#無敵モード判定
                 FIGHT_MODE = not FIGHT_MODE
                 count = 5
             if event.type == pg.QUIT:
                 return
-            if event.type == 30:
+            if event.type == 30:#爆弾の追加
                 bombs = Bomb((255, 0, 0), 10, scrn)
                 groop.add(bombs)
                 bomb_grp.add(bombs)
