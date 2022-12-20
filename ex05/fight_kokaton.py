@@ -15,14 +15,14 @@ class Timer(): #タイマークラス
     def score_time(self,st):
         nowt = time.time()
         nowtm = nowt - st
-        nowtm//=1
+        nowtm //= 1
         nowtm = int(nowtm)
         return nowtm
 
 
 class Music():#ミュージッククラス
     def __init__(self):
-        pg.mixer.init(frequency = 44100)
+        pg.mixer.init(frequency=44100)
         self.BGM = pg.mixer.Sound("music/春よ、強く美しく.mp3")
         self.EXPlOSION = pg.mixer.Sound("music/爆発2.mp3")
 
@@ -37,14 +37,14 @@ class ScoreTime(): #スコアクラス
     def __init__(self):
         root = tk.Tk()
         root.withdraw()
-        with open('ex05/text.txt',mode="r", encoding="UTF-8") as file:# ハイスコア読み込み
+        with open('ex05/text.txt', mode="r", encoding="UTF-8") as file:# ハイスコア読み込み
             for num in file.readline():
                 self.HISCORE = int(num)
 
     def score(self,timer,st):
         self.score_time = timer.score_time(st)
         if self.score_time > self.HISCORE:#ハイスコア判定と書き込み
-            with open('ex05/text.txt',mode="w", encoding="UTF-8") as file:
+            with open('ex05/text.txt', mode="w", encoding="UTF-8") as file:
                 file.write(f"{self.score_time}")
             tkm.showinfo("Hit", f"ハイスコア:{self.HISCORE}秒  生存時間:{self.score_time}秒")
             tkm.showinfo("Hit", "ハイスコア更新おめでとう！")
@@ -59,7 +59,7 @@ class Text_blit():#テキスト描画クラス
 
     def text(self, text1, scrn, xy):
         text = self.font.render(text1, True, (0,0,0))
-        scrn.blit_text(text,xy)
+        scrn.blit_text(text, xy)
 
 
 class Screen(pg.sprite.Sprite): #スクリーンと背景のクラス　　
@@ -77,8 +77,8 @@ class Screen(pg.sprite.Sprite): #スクリーンと背景のクラス　　
         else:
             self.sfc.blit(self.bgi_sfc, self.bgi_rct)
 
-    def blit_text(self,text,pos:list):
-        self.sfc.blit(text,pos)
+    def blit_text(self, text, pos:list):
+        self.sfc.blit(text, pos)
 
     def get_rect(self):
         return self.rct
@@ -111,7 +111,7 @@ class Bird(pg.sprite.Sprite): #こうかとんのクラス
         self.image = pg.image.load(file_path)
         self.rect.centerx = 450
         self.rect.centery = 300
-        scrn.blit(self.image,self.rect)
+        scrn.blit(self.image, self.rect)
 
     def update(self, scrn):
         key_states = pg.key.get_pressed()
@@ -159,7 +159,7 @@ class Bomb(pg.sprite.Sprite):# 爆弾を生成するクラス
         scrn.blit(self.image, self.rect)
 
 
-def check_bound(obj_rct,scr_rct): #衝突チェック関数
+def check_bound(obj_rct, scr_rct): #衝突チェック関数
     yoko,tate = +1,+1
     if obj_rct.left < scr_rct.left or obj_rct.right > scr_rct.right:
         yoko = -1
