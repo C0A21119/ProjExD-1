@@ -186,6 +186,7 @@ def main():
     music.bgm()
     FIGHT_MODE = True
     count = 5
+
     while True:
         scrn.blit()
         if FIGHT_MODE:
@@ -202,8 +203,10 @@ def main():
                 music.explosion()
                 score_time.score(timer,st)
                 return
+
         groop.update(scrn)
         groop.draw(scrn.sfc)
+
         for event in pg.event.get():
             if (event.type == pg.MOUSEBUTTONDOWN
                     and event.button == 1): #マウス操作モード判定
@@ -218,10 +221,13 @@ def main():
                 bombs = Bomb((255, 0, 0), 10, scrn)
                 groop.add(bombs)
                 bomb_grp.add(bombs)
+
         if bird.MOUSE_MODE:
             text_blit.text("MOUSEMODE ON", scrn , [700,10])#マウスモードの表示
+
         times = timer.score_time(st)
         text_blit.text(f"ScoreTime{times}", scrn , [10,10])#タイマーの表示
+
         pg.display.update()
         clock.tick(1000)
 
