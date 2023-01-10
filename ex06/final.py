@@ -1,6 +1,8 @@
 import pygame as pg
 import math
 import sys
+import random
+import tkinter.messagebox as tkm
 
 from pygame.locals import *
 
@@ -48,6 +50,7 @@ class Ball(pg.sprite.Sprite):
         self.scrn = scrn
         self.dx = 0 # ボールの速度
         self.dy = 0
+        self.count = 3 #残機
 
     def start(self):
         self.rect.centerx = pg.mouse.get_pos()[0]
@@ -60,22 +63,39 @@ class Ball(pg.sprite.Sprite):
     def move(self):
         if self.rect.bottom == self.scrn.rect.bottom:
             self.update = self.start
+            self.count -= 1
         yoko,tate = check_bound(self.rect, self.scrn.rect)
         self.dx = self.dx * yoko
         self.dy = self.dy * tate
         self.rect.centerx += self.dx
         self.rect.centery += self.dy
         self.rect.clamp_ip(self.scrn)
+        
 
 class Block(pg.sprite.Sprite):
     def __init__(self, scrn:Screen, x, y):
+        lst = ["red","blue","yellow","green","orange","violet"]
         pg.sprite.Sprite.__init__(self)
         self.image = pg.Surface((40, 20))
         self.image.set_colorkey((0, 0, 0))
-        pg.draw.rect(self.image, "blue", (0,0,30,10))
+        pg.draw.rect(self.image, random.choice(lst), (0,0,30,10))
         self.rect = self.image.get_rect()
         self.rect.left = 5 + scrn.rect.left + x * self.rect.width
         self.rect.top = 5 + scrn.rect.top + y * self.rect.bottom
+
+class sub_screen():
+    def out(self,screen):
+        #bg_sfc = pg.image.load("fig/pg_bg.jpg")
+        self.font = pg.font.SysFont(None,55)
+        text = self.font.render("GAME OVER",True,(0,0,0))
+        screen.blit(text,(200, 300))
+        '''
+        while (1):
+        scrn.image.fill((0,0,0))                                   
+        text = font.render("TEST", True, (255,255,255)) 
+        screen.blit(text, [20, 100])
+        pg.display.update()
+        '''
 
 def check_collision(ball, paddle, paddles, blocks):
     blocks_collided = pg.sprite.spritecollide(ball, blocks, True)
@@ -134,6 +154,8 @@ def main():
     ball = Ball(paddle, scrn)
     group.add(ball)
     clock = pg.time.Clock()
+    subscreen = sub_screen()
+    
 
     while True:
         scrn.bilt()
@@ -141,7 +163,15 @@ def main():
         group.update()        # 全てのスプライトグループを更新
         group.draw(scrn.sfc)    # 全てのスプライトグループを描画
         check_collision(ball, paddle, paddles, blocks)
+        #subscreen.out(scrn.sfc)
+        #pg.display.update()
+        print(ball.count)
+        if ball.count <= 0:
+            subscreen.out(scrn.sfc)
         pg.display.update()
+
+        if ball.count <= 0:
+            pg.quit()
 
         for event in pg.event.get():
             if event.type == QUIT:
@@ -154,5 +184,4 @@ def main():
 if __name__ == "__main__":
     pg.init()
     main()
-
-    #加筆
+    
