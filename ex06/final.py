@@ -80,7 +80,7 @@ class Block(pg.sprite.Sprite):
         self.rect.left = 5 + scrn.rect.left + x * self.rect.width
         self.rect.top = 5 + scrn.rect.top + y * self.rect.bottom
 
-class Sub_screen():
+class Sub_screen(): #スタート画面
     def start(self):
         root = tk.Tk()
         root.title("start")
@@ -98,8 +98,7 @@ class Sub_screen():
                         )
         label.pack()
 
-        
-
+        #ルールボタン
         def button_click():
             tkm.showwarning("ルール","マウスパッドをタップでスタート!ポインターを左右に動かしてボールをブロックにぶつけよう!!")
                 
@@ -170,7 +169,7 @@ def main():
             group.add(black)
             blocks.add(black)
     balls = []
-    for i in range(2):
+    for i in range(2):#ボール複数追加
         ball = Ball(paddle, scrn)
         balls.append(ball)
         group.add(ball)
