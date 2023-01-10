@@ -170,6 +170,7 @@ def main():
     clock = pg.time.Clock()
     subscreen = sub_screen()
     score = Score()
+    poseFlag = False
 
     while True:
         scrn.bilt()
@@ -180,6 +181,11 @@ def main():
         check_collision(ball, paddle, paddles, blocks, score)
         pg.display.update()
 
+        while poseFlag:
+            for event in pg.event.get():
+                if event.type == KEYDOWN and event.key == K_SPACE:
+                    poseFlag = not poseFlag
+
         for event in pg.event.get():
             if event.type == QUIT:
                 pg.quit()
@@ -189,6 +195,8 @@ def main():
                 pg.quit()
                 subscreen.end(score)
                 sys.exit()
+            if event.type == KEYDOWN and event.key == K_SPACE:
+                poseFlag = not poseFlag
 
 if __name__ == "__main__":
     pg.init()
