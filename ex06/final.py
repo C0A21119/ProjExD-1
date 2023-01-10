@@ -1,6 +1,8 @@
 import pygame as pg
 import math
 import sys
+import random
+import tkinter.messagebox as tkm
 import tkinter as tk
 
 from pygame.locals import *
@@ -58,6 +60,7 @@ class Ball(pg.sprite.Sprite):#ボールクラス
         # ボールの速度
         self.dx = 0
         self.dy = 0
+        self.count = 3 #残機
 
     def start(self):#初期座標
         self.rect.centerx = pg.mouse.get_pos()[0]
@@ -72,6 +75,7 @@ class Ball(pg.sprite.Sprite):#ボールクラス
             self.update = self.start
             Ball.count -= 1
         yoko,tate = check_bound(self.rect, self.scrn.rect)#バウンドチェック
+
         self.dx = self.dx * yoko
         self.dy = self.dy * tate
         self.rect.centerx += self.dx
@@ -81,11 +85,12 @@ class Ball(pg.sprite.Sprite):#ボールクラス
 
 class Block(pg.sprite.Sprite):#ブロッククラス
     def __init__(self, scrn:Screen, x, y):
+        lst = ["red","blue","yellow","green","orange","violet"]
         pg.sprite.Sprite.__init__(self)
         #長方形描画
         self.image = pg.Surface((40, 20))
         self.image.set_colorkey((0, 0, 0))
-        pg.draw.rect(self.image, "blue", (0,0,30,10))
+        pg.draw.rect(self.image, random.choice(lst), (0,0,30,10))
         self.rect = self.image.get_rect()
         #描画位置設定
         self.rect.left = 5 + scrn.rect.left + x * self.rect.width
@@ -93,6 +98,11 @@ class Block(pg.sprite.Sprite):#ブロッククラス
 
 
 class Sub_screen(): #スタート画面
+    def out(self,screen):
+        #bg_sfc = pg.image.load("fig/pg_bg.jpg")
+        self.font = pg.font.SysFont(None,55)
+        text = self.font.render("GAME OVER",True,(0,0,0))
+        screen.blit(text,(200, 300))
     def start(self):
         root = tk.Tk()
         root.title("start")
@@ -140,14 +150,13 @@ class Sub_screen(): #スタート画面
         label.pack()
         root.mainloop()
         
-def check_collision(balls, paddle, paddles, blocks):
+def check_collision(balls, paddle, paddles, blocks, score):
     oldblocks = len(blocks)
     for ball in balls:
         blocks_collided = pg.sprite.spritecollide(ball, blocks, True)
         paddle_collided = pg.sprite.spritecollide(ball, paddles, False)
         if blocks_collided:
-        score.add(oldblocks - len(blocks))#スコア加算
-        oldrect = ball.rect
+            score.add(oldblocks - len(blocks))#スコア加算
             oldrect = ball.rect
             for block in blocks_collided:
                 # ボールが左から衝突
@@ -249,8 +258,12 @@ def main():
         #ライフ判定orブロックが全て消えたら
         if Ball.count == 0 or len(blocks) == 0:
             subscreen.end(score)
+            subscreen.out(scrn.sfc)
             return
         #イベント判定
+
+        if ball.count <= 0:
+            pg.quit()
 
         for event in pg.event.get():
             if event.type == QUIT:
