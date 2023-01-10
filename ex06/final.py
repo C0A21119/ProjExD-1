@@ -39,6 +39,7 @@ class Ball(pg.sprite.Sprite):#ボールクラス
     #反射角
     angle_left = 135
     angle_right = 45
+    count = 3# 残基
 
     def __init__(self, paddle, scrn:Screen):
         pg.sprite.Sprite.__init__(self)
@@ -54,8 +55,6 @@ class Ball(pg.sprite.Sprite):#ボールクラス
         # ボールの速度
         self.dx = 0
         self.dy = 0
-        # 残基
-        self.count = 3
 
     def start(self):#初期座標
         self.rect.centerx = pg.mouse.get_pos()[0]
@@ -68,7 +67,7 @@ class Ball(pg.sprite.Sprite):#ボールクラス
     def move(self):#移動関数
         if self.rect.bottom == self.scrn.rect.bottom:#落ちた場合
             self.update = self.start
-            self.count -= 1
+            Ball.count -= 1
         yoko,tate = check_bound(self.rect, self.scrn.rect)#バウンドチェック
         self.dx = self.dx * yoko
         self.dy = self.dy * tate
@@ -96,8 +95,11 @@ class sub_screen():#サブスクリーンクラス
         root.geometry("300x100")
 
         score = Score.score
+        if score > Score.HISCORE:#ハイスコア判定と書き込み
+            with open('ex06/text.txt', mode="w", encoding="UTF-8") as file:
+                file.write(f"{score}")
         label = tk.Label(root,
-                        text=f"おめでとう{score}点だよ",
+                        text=f"お疲れ様{score}点だよ\n前回までのハイスコアは\n{Score.HISCORE}点だよ",
                         font=("", 20)
                         )
         label.pack()
@@ -110,9 +112,15 @@ class Score():#スコアクラス
         self.score = 0
         self.x = 10
         self.y = 250
+        nums = ""
+        with open('ex06/text.txt', mode="r", encoding="UTF-8") as file:# ハイスコア読み込み
+            for num in file.readline():
+                nums += num
+            self.HISCORE = int(nums)
+            print(self.HISCORE)
 
-    def draw(self, scrn:Screen):#スコア描画
-        text = self.font.render("SCORE"+str(self.score), True, (0,0,0))
+    def draw(self, Ball, scrn:Screen):#スコア描画
+        text = self.font.render(f"life{Ball.count} SCORE{self.score}", True, (0,0,0))
         scrn.blit(text,(self.x, self.y))
 
     def add(self, x):#スコア加算
@@ -152,7 +160,7 @@ def check_collision(ball, paddle, paddles, blocks, score):#衝突判定
         ball.dx = ball.speed * math.cos(angle)
         ball.dy = -ball.speed * math.sin(angle)
 
-def check_bound(obj_rect, scr_rect): #衝突チェック関数
+def check_bound(obj_rect, scr_rect): #反射チェック関数
     yoko,tate = +1,+1
     if obj_rect.left == scr_rect.left or obj_rect.right == scr_rect.right:
         yoko = -1#反転
@@ -186,7 +194,7 @@ def main():
         clock.tick(60)      # フレームレート(60fps)
         group.update()        # 全てのスプライトグループを更新
         group.draw(scrn.sfc)    # 全てのスプライトグループを描画
-        score.draw(scrn.sfc)    # スコアを描画
+        score.draw(Ball, scrn.sfc)    # スコアを描画
         check_collision(ball, paddle, paddles, blocks, score)#衝突判定
         pg.display.update()
 
@@ -194,7 +202,10 @@ def main():
             for event in pg.event.get():
                 if event.type == KEYDOWN and event.key == K_SPACE:
                     poseFlag = not poseFlag
-
+        if Ball.count == 0:
+            pg.quit()
+            subscreen.end(score)
+            sys.exit()
         for event in pg.event.get():
             if event.type == QUIT:
                 pg.quit()
