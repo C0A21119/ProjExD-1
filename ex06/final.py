@@ -5,6 +5,7 @@ import tkinter as tk
 
 from pygame.locals import *
 
+
 class Screen(pg.sprite.Sprite):#スクリーンクラス
     def __init__(self, title, wh_pos:tuple, file_path):
         pg.sprite.Sprite.__init__(self)
@@ -16,6 +17,7 @@ class Screen(pg.sprite.Sprite):#スクリーンクラス
 
     def bilt(self):#背景の描画
         self.sfc.blit(self.bgi_sfc, self.bgi_rect)
+
 
 class Paddle(pg.sprite.Sprite):#パドルクラス
     def __init__(self, scrn:Screen):
@@ -33,6 +35,7 @@ class Paddle(pg.sprite.Sprite):#パドルクラス
     def update(self):#アップデート関数
         self.rect.centerx = pg.mouse.get_pos()[0]#マウスのx座標と同期する
         self.rect.clamp_ip(self.scrn)#画面外に出ていかないように
+
 
 class Ball(pg.sprite.Sprite):#ボールクラス
     speed = 5#スピード
@@ -75,6 +78,7 @@ class Ball(pg.sprite.Sprite):#ボールクラス
         self.rect.centery += self.dy
         self.rect.clamp_ip(self.scrn)#画面外に出ないように
 
+
 class Block(pg.sprite.Sprite):#ブロッククラス
     def __init__(self, scrn:Screen, x, y):
         pg.sprite.Sprite.__init__(self)
@@ -87,13 +91,13 @@ class Block(pg.sprite.Sprite):#ブロッククラス
         self.rect.left = 5 + scrn.rect.left + x * self.rect.width
         self.rect.top = 5 + scrn.rect.top + y * self.rect.bottom
 
+
 class sub_screen():#サブスクリーンクラス
     #クリア画面
     def end(self, Score):
         root = tk.Tk()
         root.title("お疲れ様")
         root.geometry("300x100")
-
         score = Score.score
         if score > Score.HISCORE:#ハイスコア判定と書き込み
             with open('ex06/text.txt', mode="w", encoding="UTF-8") as file:
@@ -103,8 +107,8 @@ class sub_screen():#サブスクリーンクラス
                         font=("", 20)
                         )
         label.pack()
-
         root.mainloop()
+
 
 class Score():#スコアクラス
     def __init__(self):
@@ -126,10 +130,12 @@ class Score():#スコアクラス
     def add(self, x):#スコア加算
         self.score += x*10
 
+
 def check_collision(ball, paddle, paddles, blocks, score):#衝突判定
     oldblocks = len(blocks)
     blocks_collided = pg.sprite.spritecollide(ball, blocks, True)#ボールとブロック
     paddle_collided = pg.sprite.spritecollide(ball, paddles, False)#ボールとパドル
+
     if blocks_collided:#ブロック衝突処理
         score.add(oldblocks - len(blocks))#スコア加算
         oldrect = ball.rect
@@ -159,6 +165,7 @@ def check_collision(ball, paddle, paddles, blocks, score):#衝突判定
         angle = math.radians(y)                     # 反射角度
         ball.dx = ball.speed * math.cos(angle)
         ball.dy = -ball.speed * math.sin(angle)
+
 
 def check_bound(obj_rect, scr_rect): #反射チェック関数
     yoko,tate = +1,+1
@@ -197,27 +204,28 @@ def main():
         score.draw(Ball, scrn.sfc)    # スコアを描画
         check_collision(ball, paddle, paddles, blocks, score)#衝突判定
         pg.display.update()
-
-        while poseFlag:#ポーズ判定
+        #ポーズ判定
+        while poseFlag:
             for event in pg.event.get():
                 if event.type == KEYDOWN and event.key == K_SPACE:
                     poseFlag = not poseFlag
+        #ライフ判定
         if Ball.count == 0:
-            pg.quit()
             subscreen.end(score)
-            sys.exit()
+            return
+        #イベント判定
         for event in pg.event.get():
             if event.type == QUIT:
-                pg.quit()
                 subscreen.end(score)
-                sys.exit()
+                return
             if event.type == KEYDOWN and event.key == K_ESCAPE:
-                pg.quit()
                 subscreen.end(score)
-                sys.exit()
+                return
             if event.type == KEYDOWN and event.key == K_SPACE:
                 poseFlag = not poseFlag
 
 if __name__ == "__main__":
     pg.init()
     main()
+    pg.quit()
+    sys.exit()
