@@ -212,6 +212,9 @@ def main():
         if Ball.count == 0:
             subscreen.end(score)
             return
+        if len(blocks) == 0:#ブロックが全て消えたら
+            subscreen.end(score)
+            return
         #イベント判定
         for event in pg.event.get():
             if event.type == QUIT:
