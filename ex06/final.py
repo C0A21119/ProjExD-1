@@ -224,6 +224,7 @@ def main():
             if event.type == KEYDOWN and event.key == K_SPACE:
                 poseFlag = not poseFlag
 
+
 if __name__ == "__main__":
     pg.init()
     main()
