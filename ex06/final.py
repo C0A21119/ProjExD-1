@@ -5,7 +5,7 @@ import tkinter as tk
 
 from pygame.locals import *
 
-class Screen(pg.sprite.Sprite):
+class Screen(pg.sprite.Sprite):#スクリーンクラス
     def __init__(self, title, wh_pos:tuple, file_path):
         pg.sprite.Sprite.__init__(self)
         pg.display.set_caption(title)
@@ -14,12 +14,13 @@ class Screen(pg.sprite.Sprite):
         self.bgi_sfc = pg.image.load(file_path)
         self.bgi_rect = self.bgi_sfc.get_rect()
 
-    def bilt(self):
+    def bilt(self):#背景の描画
         self.sfc.blit(self.bgi_sfc, self.bgi_rect)
 
-class Paddle(pg.sprite.Sprite):
+class Paddle(pg.sprite.Sprite):#パドルクラス
     def __init__(self, scrn:Screen):
         pg.sprite.Sprite.__init__(self)
+        #長方形の作成
         self.image = pg.Surface((100, 10))
         self.image.set_colorkey((0, 0, 0))
         pg.draw.rect(self.image, "blue", (0,0,100,10))
@@ -29,58 +30,66 @@ class Paddle(pg.sprite.Sprite):
         self.scrn = scrn
         self.scrn.sfc.blit(self.image, self.rect)
 
-    def update(self):
-        self.rect.centerx = pg.mouse.get_pos()[0]
-        self.rect.clamp_ip(self.scrn)
+    def update(self):#アップデート関数
+        self.rect.centerx = pg.mouse.get_pos()[0]#マウスのx座標と同期する
+        self.rect.clamp_ip(self.scrn)#画面外に出ていかないように
 
-class Ball(pg.sprite.Sprite):
-    speed = 5
+class Ball(pg.sprite.Sprite):#ボールクラス
+    speed = 5#スピード
+    #反射角
     angle_left = 135
     angle_right = 45
 
     def __init__(self, paddle, scrn:Screen):
         pg.sprite.Sprite.__init__(self)
+        #長方形の描画
         self.image = pg.Surface((20, 20))
         self.image.set_colorkey((0, 0, 0))
         pg.draw.circle(self.image, "red", (10, 10), 10)
         self.rect = self.image.get_rect()
         self.paddle = paddle
+        #アップデートの切り替え
         self.update = self.start
         self.scrn = scrn
-        self.dx = 0 # ボールの速度
+        # ボールの速度
+        self.dx = 0
         self.dy = 0
+        # 残基
         self.count = 3
 
-    def start(self):
+    def start(self):#初期座標
         self.rect.centerx = pg.mouse.get_pos()[0]
         self.rect.bottom = self.paddle.rect.top
-        if pg.mouse.get_pressed()[0] == 1:
+        if pg.mouse.get_pressed()[0] == 1:#左クリックで発射
             self.dx = 0
             self.dy = -self.speed
             self.update = self.move
 
-    def move(self):
-        if self.rect.bottom == self.scrn.rect.bottom:
+    def move(self):#移動関数
+        if self.rect.bottom == self.scrn.rect.bottom:#落ちた場合
             self.update = self.start
             self.count -= 1
-        yoko,tate = check_bound(self.rect, self.scrn.rect)
+        yoko,tate = check_bound(self.rect, self.scrn.rect)#バウンドチェック
         self.dx = self.dx * yoko
         self.dy = self.dy * tate
         self.rect.centerx += self.dx
         self.rect.centery += self.dy
-        self.rect.clamp_ip(self.scrn)
+        self.rect.clamp_ip(self.scrn)#画面外に出ないように
 
-class Block(pg.sprite.Sprite):
+class Block(pg.sprite.Sprite):#ブロッククラス
     def __init__(self, scrn:Screen, x, y):
         pg.sprite.Sprite.__init__(self)
+        #長方形描画
         self.image = pg.Surface((40, 20))
         self.image.set_colorkey((0, 0, 0))
         pg.draw.rect(self.image, "blue", (0,0,30,10))
         self.rect = self.image.get_rect()
+        #描画位置設定
         self.rect.left = 5 + scrn.rect.left + x * self.rect.width
         self.rect.top = 5 + scrn.rect.top + y * self.rect.bottom
 
-class sub_screen():
+class sub_screen():#サブスクリーンクラス
+    #クリア画面
     def end(self, Score):
         root = tk.Tk()
         root.title("お疲れ様")
@@ -95,26 +104,26 @@ class sub_screen():
 
         root.mainloop()
 
-class Score():
+class Score():#スコアクラス
     def __init__(self):
-        self.font = pg.font.SysFont("arial", 30)
+        self.font = pg.font.SysFont("arial", 30)#フォント設定
         self.score = 0
         self.x = 10
         self.y = 250
 
-    def draw(self, scrn:Screen):
+    def draw(self, scrn:Screen):#スコア描画
         text = self.font.render("SCORE"+str(self.score), True, (0,0,0))
         scrn.blit(text,(self.x, self.y))
 
-    def add(self, x):
+    def add(self, x):#スコア加算
         self.score += x*10
 
-def check_collision(ball, paddle, paddles, blocks, score):
+def check_collision(ball, paddle, paddles, blocks, score):#衝突判定
     oldblocks = len(blocks)
-    blocks_collided = pg.sprite.spritecollide(ball, blocks, True)
-    paddle_collided = pg.sprite.spritecollide(ball, paddles, False)
-    if blocks_collided:
-        score.add(oldblocks - len(blocks))
+    blocks_collided = pg.sprite.spritecollide(ball, blocks, True)#ボールとブロック
+    paddle_collided = pg.sprite.spritecollide(ball, paddles, False)#ボールとパドル
+    if blocks_collided:#ブロック衝突処理
+        score.add(oldblocks - len(blocks))#スコア加算
         oldrect = ball.rect
         for block in blocks_collided:
             # ボールが左から衝突
@@ -134,7 +143,7 @@ def check_collision(ball, paddle, paddles, blocks, score):
                 ball.rect.top = block.rect.bottom
                 ball.dy = -ball.dy
 
-    if paddle_collided:
+    if paddle_collided:#パドル衝突処理
         (x1, y1) = (paddle.rect.left - ball.rect.width, ball.angle_left)
         (x2, y2) = (paddle.rect.right, ball.angle_right)
         x = ball.rect.left                          # ボールが当たった位置
@@ -146,42 +155,42 @@ def check_collision(ball, paddle, paddles, blocks, score):
 def check_bound(obj_rect, scr_rect): #衝突チェック関数
     yoko,tate = +1,+1
     if obj_rect.left == scr_rect.left or obj_rect.right == scr_rect.right:
-        yoko = -1
+        yoko = -1#反転
     if obj_rect.top == scr_rect.top:
-        tate = -1
+        tate = -1#反転
     return yoko, tate
 
 
 def main():
     scrn = Screen("ブロック崩し", (600, 600), "fig/pg_bg.jpg")
     group = pg.sprite.OrderedUpdates()  # 描画用のスプライトグループ
-    blocks = pg.sprite.Group()       # 衝突判定用のスプライトグループ
-    paddles = pg.sprite.Group()
-    paddle = Paddle(scrn)
+    blocks = pg.sprite.Group()       # ブロック衝突判定用のスプライトグループ
+    paddles = pg.sprite.Group()      #パドル衝突判定用のスプライトグループ
+    paddle = Paddle(scrn)#パドル描画
     group.add(paddle)
     paddles.add(paddle)
-    for x in range(0, 15):
+    for x in range(0, 15):#ブロック描画
         for y in range(0, 11):
             black = Block(scrn, x, y)
             group.add(black)
             blocks.add(black)
-    ball = Ball(paddle, scrn)
+    ball = Ball(paddle, scrn)#ボール描画
     group.add(ball)
     clock = pg.time.Clock()
-    subscreen = sub_screen()
-    score = Score()
-    poseFlag = False
+    subscreen = sub_screen()#サブスクリーン
+    score = Score()#スコア
+    poseFlag = False#ポーズフラグ
 
     while True:
         scrn.bilt()
         clock.tick(60)      # フレームレート(60fps)
         group.update()        # 全てのスプライトグループを更新
         group.draw(scrn.sfc)    # 全てのスプライトグループを描画
-        score.draw(scrn.sfc)
-        check_collision(ball, paddle, paddles, blocks, score)
+        score.draw(scrn.sfc)    # スコアを描画
+        check_collision(ball, paddle, paddles, blocks, score)#衝突判定
         pg.display.update()
 
-        while poseFlag:
+        while poseFlag:#ポーズ判定
             for event in pg.event.get():
                 if event.type == KEYDOWN and event.key == K_SPACE:
                     poseFlag = not poseFlag
