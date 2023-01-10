@@ -30,7 +30,7 @@ class Paddle(pg.sprite.Sprite):#パドルクラス
         self.rect.centerx = scrn.rect.centerx
         self.rect.bottom = scrn.rect.bottom
         self.scrn = scrn
-        self.scrn.sfc.blit(self.image, self.rect)
+        self.scrn.sfc.blit(self.image, self.rect)#描写
 
     def update(self):#アップデート関数
         self.rect.centerx = pg.mouse.get_pos()[0]#マウスのx座標と同期する
