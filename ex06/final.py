@@ -82,7 +82,7 @@ class Sub_screen():
     def start(self):
         root = tk.Tk()
         root.title("start")
-        root.geometry("450x80")
+        root.geometry("500x150")
         
         label = tk.Label(root, 
                          text="ブロック崩しEX!!", 
@@ -147,7 +147,7 @@ def check_bound(obj_rect, scr_rect): #衝突チェック関数
 
 
 def main():
-    scrn = Screen("ブロック崩し", (600, 600), "fig/pg_bg.jpg")
+    scrn = Screen("ブロック崩し", (600, 600), "fig/haikei.jpg")
     group = pg.sprite.OrderedUpdates()  # 描画用のスプライトグループ
     blocks = pg.sprite.Group()       # 衝突判定用のスプライトグループ
     paddles = pg.sprite.Group()
