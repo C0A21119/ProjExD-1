@@ -120,8 +120,7 @@ class Score():#スコアクラス
         with open('ex06/text.txt', mode="r", encoding="UTF-8") as file:# ハイスコア読み込み
             for num in file.readline():
                 nums += num
-            self.HISCORE = int(nums)
-            print(self.HISCORE)
+        self.HISCORE = int(nums)
 
     def draw(self, Ball, scrn:Screen):#スコア描画
         text = self.font.render(f"life{Ball.count} SCORE{self.score}", True, (0,0,0))
