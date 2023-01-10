@@ -1,7 +1,7 @@
 import pygame as pg
 import math
 import sys
-
+import tkinter as tk
 from pygame.locals import *
 
 class Screen(pg.sprite.Sprite):
@@ -33,6 +33,7 @@ class Paddle(pg.sprite.Sprite):
         self.rect.clamp_ip(self.scrn)
 
 class Ball(pg.sprite.Sprite):
+
     speed = 5
     angle_left = 135
     angle_right = 45
@@ -77,37 +78,64 @@ class Block(pg.sprite.Sprite):
         self.rect.left = 5 + scrn.rect.left + x * self.rect.width
         self.rect.top = 5 + scrn.rect.top + y * self.rect.bottom
 
-def check_collision(ball, paddle, paddles, blocks):
-    blocks_collided = pg.sprite.spritecollide(ball, blocks, True)
-    paddle_collided = pg.sprite.spritecollide(ball, paddles, False)
-    if blocks_collided:
-        oldrect = ball.rect
-        for block in blocks_collided:
-            # ボールが左から衝突
-            if oldrect.left < block.rect.left < oldrect.right < block.rect.right:
-                ball.rect.right = block.rect.left
-                ball.dx = -ball.dx
-            # ボールが右から衝突
-            if block.rect.left < oldrect.left < block.rect.right < oldrect.right:
-                ball.rect.left = block.rect.right
-                ball.dx = -ball.dx
-            # ボールが上から衝突
-            if oldrect.top < block.rect.top < oldrect.bottom < block.rect.bottom:
-                ball.rect.bottom = block.rect.top
-                ball.dy = -ball.dy
-            # ボールが下から衝突
-            if block.rect.top < oldrect.top < block.rect.bottom < oldrect.bottom:
-                ball.rect.top = block.rect.bottom
-                ball.dy = -ball.dy
+class Sub_screen():
+    def start(self):
+        root = tk.Tk()
+        root.title("start")
+        root.geometry("450x80")
+        
+        label = tk.Label(root, 
+                         text="ブロック崩しEX!!", 
+                         font=("",50)
+                        )
+        label.pack()
 
-    if paddle_collided:
-        (x1, y1) = (paddle.rect.left - ball.rect.width, ball.angle_left)
-        (x2, y2) = (paddle.rect.right, ball.angle_right)
-        x = ball.rect.left                          # ボールが当たった位置
-        y = (float(y2-y1)/(x2-x1)) * (x - x1) + y1  # 線形補間
-        angle = math.radians(y)                     # 反射角度
-        ball.dx = ball.speed * math.cos(angle)
-        ball.dy = -ball.speed * math.sin(angle)
+        label = tk.Label(root, 
+                         text=" ~ 目指せハイスコア!!! ~ ", 
+                         font=("",30)
+                        )
+        label.pack()
+
+        label = tk.Label(root, 
+                         text="", 
+                         font=("",20)
+                        )
+        label.pack()
+
+        root.mainloop()
+        
+def check_collision(balls, paddle, paddles, blocks):
+    for ball in balls:
+        blocks_collided = pg.sprite.spritecollide(ball, blocks, True)
+        paddle_collided = pg.sprite.spritecollide(ball, paddles, False)
+        if blocks_collided:
+            oldrect = ball.rect
+            for block in blocks_collided:
+                # ボールが左から衝突
+                if oldrect.left < block.rect.left < oldrect.right < block.rect.right:
+                    ball.rect.right = block.rect.left
+                    ball.dx = -ball.dx
+                # ボールが右から衝突
+                if block.rect.left < oldrect.left < block.rect.right < oldrect.right:
+                    ball.rect.left = block.rect.right
+                    ball.dx = -ball.dx
+                # ボールが上から衝突
+                if oldrect.top < block.rect.top < oldrect.bottom < block.rect.bottom:
+                    ball.rect.bottom = block.rect.top
+                    ball.dy = -ball.dy
+                # ボールが下から衝突
+                if block.rect.top < oldrect.top < block.rect.bottom < oldrect.bottom:
+                    ball.rect.top = block.rect.bottom
+                    ball.dy = -ball.dy
+
+        if paddle_collided:
+            (x1, y1) = (paddle.rect.left - ball.rect.width, ball.angle_left)
+            (x2, y2) = (paddle.rect.right, ball.angle_right)
+            x = ball.rect.left                          # ボールが当たった位置
+            y = (float(y2-y1)/(x2-x1)) * (x - x1) + y1  # 線形補間
+            angle = math.radians(y)                     # 反射角度
+            ball.dx = ball.speed * math.cos(angle)
+            ball.dy = -ball.speed * math.sin(angle)
 
 def check_bound(obj_rect, scr_rect): #衝突チェック関数
     yoko,tate = +1,+1
@@ -131,18 +159,24 @@ def main():
             black = Block(scrn, x, y)
             group.add(black)
             blocks.add(black)
-    ball = Ball(paddle, scrn)
-    group.add(ball)
+    balls = []
+    for i in range(2):
+        ball = Ball(paddle, scrn)
+        balls.append(ball)
+        group.add(ball)
     clock = pg.time.Clock()
+    subscreen = Sub_screen()
+    subscreen.start()
 
     while True:
         scrn.bilt()
         clock.tick(60)      # フレームレート(60fps)
         group.update()        # 全てのスプライトグループを更新
         group.draw(scrn.sfc)    # 全てのスプライトグループを描画
-        check_collision(ball, paddle, paddles, blocks)
+        check_collision(balls, paddle, paddles, blocks)
         pg.display.update()
-
+        if len(blocks) == 0:
+            pass
         for event in pg.event.get():
             if event.type == QUIT:
                 pg.quit()
