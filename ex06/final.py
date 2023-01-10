@@ -2,7 +2,9 @@ import pygame as pg
 import math
 import sys
 import tkinter as tk
+
 from pygame.locals import *
+import tkinter.messagebox as tkm
 
 class Screen(pg.sprite.Sprite):
     def __init__(self, title, wh_pos:tuple, file_path):
@@ -82,8 +84,8 @@ class Sub_screen():
     def start(self):
         root = tk.Tk()
         root.title("start")
-        root.geometry("500x150")
-        
+        root.geometry("600x250")
+
         label = tk.Label(root, 
                          text="ブロック崩しEX!!", 
                          font=("",50)
@@ -96,12 +98,20 @@ class Sub_screen():
                         )
         label.pack()
 
+        
+
+        def button_click():
+            tkm.showwarning("ルール","マウスパッドをタップでスタート!ポインターを左右に動かしてボールをブロックにぶつけよう!!")
+                
+        button = tk.Button(root, text="ルール", command=button_click)
+        button.pack()
+        
         label = tk.Label(root, 
-                         text="", 
+                         text=" 右上の×ボタンをクリックしてゲームスタート!! ", 
                          font=("",20)
                         )
         label.pack()
-
+        
         root.mainloop()
         
 def check_collision(balls, paddle, paddles, blocks):
