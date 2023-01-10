@@ -114,8 +114,8 @@ class Score():#スコアクラス
     def __init__(self):
         self.font = pg.font.SysFont("arial", 30)#フォント設定
         self.score = 0
-        self.x = 10
-        self.y = 250
+        self.x = 10#x座標
+        self.y = 250#y座標
         nums = ""
         with open('ex06/text.txt', mode="r", encoding="UTF-8") as file:# ハイスコア読み込み
             for num in file.readline():
