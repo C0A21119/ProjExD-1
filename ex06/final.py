@@ -154,3 +154,5 @@ def main():
 if __name__ == "__main__":
     pg.init()
     main()
+
+    #加筆
