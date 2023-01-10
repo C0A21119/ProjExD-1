@@ -1,6 +1,7 @@
 import pygame as pg
 import math
 import sys
+import tkinter as tk
 
 from pygame.locals import *
 
@@ -48,6 +49,7 @@ class Ball(pg.sprite.Sprite):
         self.scrn = scrn
         self.dx = 0 # ボールの速度
         self.dy = 0
+        self.count = 3
 
     def start(self):
         self.rect.centerx = pg.mouse.get_pos()[0]
@@ -60,6 +62,7 @@ class Ball(pg.sprite.Sprite):
     def move(self):
         if self.rect.bottom == self.scrn.rect.bottom:
             self.update = self.start
+            self.count -= 1
         yoko,tate = check_bound(self.rect, self.scrn.rect)
         self.dx = self.dx * yoko
         self.dy = self.dy * tate
@@ -77,10 +80,41 @@ class Block(pg.sprite.Sprite):
         self.rect.left = 5 + scrn.rect.left + x * self.rect.width
         self.rect.top = 5 + scrn.rect.top + y * self.rect.bottom
 
-def check_collision(ball, paddle, paddles, blocks):
+class sub_screen():
+    def end(self, Score):
+        root = tk.Tk()
+        root.title("お疲れ様")
+        root.geometry("300x100")
+
+        score = Score.score
+        label = tk.Label(root,
+                        text=f"おめでとう{score}点だよ",
+                        font=("", 20)
+                        )
+        label.pack()
+
+        root.mainloop()
+
+class Score():
+    def __init__(self):
+        self.font = pg.font.SysFont("arial", 30)
+        self.score = 0
+        self.x = 10
+        self.y = 250
+
+    def draw(self, scrn:Screen):
+        text = self.font.render("SCORE"+str(self.score), True, (0,0,0))
+        scrn.blit(text,(self.x, self.y))
+
+    def add(self, x):
+        self.score += x*10
+
+def check_collision(ball, paddle, paddles, blocks, score):
+    oldblocks = len(blocks)
     blocks_collided = pg.sprite.spritecollide(ball, blocks, True)
     paddle_collided = pg.sprite.spritecollide(ball, paddles, False)
     if blocks_collided:
+        score.add(oldblocks - len(blocks))
         oldrect = ball.rect
         for block in blocks_collided:
             # ボールが左から衝突
@@ -134,21 +168,26 @@ def main():
     ball = Ball(paddle, scrn)
     group.add(ball)
     clock = pg.time.Clock()
+    subscreen = sub_screen()
+    score = Score()
 
     while True:
         scrn.bilt()
         clock.tick(60)      # フレームレート(60fps)
         group.update()        # 全てのスプライトグループを更新
         group.draw(scrn.sfc)    # 全てのスプライトグループを描画
-        check_collision(ball, paddle, paddles, blocks)
+        score.draw(scrn.sfc)
+        check_collision(ball, paddle, paddles, blocks, score)
         pg.display.update()
 
         for event in pg.event.get():
             if event.type == QUIT:
                 pg.quit()
+                subscreen.end(score)
                 sys.exit()
             if event.type == KEYDOWN and event.key == K_ESCAPE:
                 pg.quit()
+                subscreen.end(score)
                 sys.exit()
 
 if __name__ == "__main__":
