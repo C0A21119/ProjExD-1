@@ -208,11 +208,8 @@ def main():
             for event in pg.event.get():
                 if event.type == KEYDOWN and event.key == K_SPACE:
                     poseFlag = not poseFlag
-        #ライフ判定
-        if Ball.count == 0:
-            subscreen.end(score)
-            return
-        if len(blocks) == 0:#ブロックが全て消えたら
+        #ライフ判定orブロックが全て消えたら
+        if Ball.count == 0 or len(blocks) == 0:
             subscreen.end(score)
             return
         #イベント判定
