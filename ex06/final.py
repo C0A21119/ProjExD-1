@@ -142,6 +142,7 @@ def main():
         group.draw(scrn.sfc)    # 全てのスプライトグループを描画
         check_collision(ball, paddle, paddles, blocks)
         pg.display.update()
+
         for event in pg.event.get():
             if event.type == QUIT:
                 pg.quit()
@@ -153,5 +154,3 @@ def main():
 if __name__ == "__main__":
     pg.init()
     main()
-    pg.quit() # 初期化の解除
-    sys.exit()
