@@ -1,10 +1,44 @@
 import pygame as pg
-
+import pygame.mixer
 import math
-
 import sys
 
 from pygame.locals import *
+
+class BGM:
+    def __init__(self):
+        pygame.mixer.init(frequency = 44100)    # 初期設定
+        pygame.mixer.music.load("music/BGM.mp3")     # 音楽ファイルの読み込み
+        pygame.mixer.music.play(-1)   # 音楽の再生回数(無限)
+
+class Gameover_BGM:
+    def go_BG(self):
+        pygame.mixer.init(frequency = 44100)  
+        pygame.mixer.music.load("music/gameover.mp3")   
+        pygame.mixer.music.play()   # 音楽の再生
+
+class Victory_BGM:
+    def v_BG(self):
+        pygame.mixer.init(frequency = 44100)   
+        pygame.mixer.music.load("music/victory.mp3") 
+        pygame.mixer.music.play()   
+
+class Collision_BGM:
+    def cs_BG(self):
+        pygame.mixer.init(frequency = 44100)   
+        pygame.mixer.music.load("music/衝突.mp3")   
+        pygame.mixer.music.play()  
+
+class Time():
+    def __init__(self, x, y):
+        self.sysfont = pygame.font.SysFont(None, 20)
+        self.score = 0
+        (self.x, self.y) = (x, y)
+    def draw(self, screen):
+        img = self.sysfont.render("SCORE:"+str(self.score), True, (255,255,250))
+        screen.blit(img, (self.x, self.y))
+    def add_score(self, x):
+        self.score += x
 
 class Screen(pg.sprite.Sprite):
     def __init__(self, title, wh_pos:tuple, file_path):
@@ -119,7 +153,6 @@ def check_bound(obj_rect, scr_rect): #衝突チェック関数
         tate = -1
     return yoko, tate
 
-
 def main():
     scrn = Screen("ブロック崩し", (600, 600), "fig/pg_bg.jpg")
     group = pg.sprite.OrderedUpdates()  # 描画用のスプライトグループ
@@ -136,6 +169,8 @@ def main():
     ball = Ball(paddle, scrn)
     group.add(ball)
     clock = pg.time.Clock()
+    bgm = BGM()
+    time = time(10, 10)   # タイムを画面(10, 10)に表示
 
     while True:
         scrn.bilt()
