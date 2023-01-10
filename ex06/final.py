@@ -1,5 +1,7 @@
 import pygame as pg
+
 import math
+
 import sys
 
 from pygame.locals import *
