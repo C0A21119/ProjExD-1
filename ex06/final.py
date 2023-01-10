@@ -17,7 +17,7 @@ class Screen(pg.sprite.Sprite):
         self.sfc.blit(self.bgi_sfc, self.bgi_rect)
 
 class Paddle(pg.sprite.Sprite):
-    def __init__(self, scrn:Screen):#引数にパドルのイメージ画像
+    def __init__(self, scrn:Screen):
         pg.sprite.Sprite.__init__(self)
         self.image = pg.Surface((100, 10))
         self.image.set_colorkey((0, 0, 0))
@@ -58,13 +58,15 @@ class Ball(pg.sprite.Sprite):
             self.update = self.move
 
     def move(self):
-        if self.rect.top > self.scrn.rect.bottom:
+        if self.rect.bottom == self.scrn.rect.bottom:
             self.update = self.start
         yoko,tate = check_bound(self.rect, self.scrn.rect)
         self.dx = self.dx * yoko
         self.dy = self.dy * tate
         self.rect.centerx += self.dx
         self.rect.centery += self.dy
+        self.rect.clamp_ip(self.scrn)
+
 class Block(pg.sprite.Sprite):
     def __init__(self, scrn:Screen, x, y):
         pg.sprite.Sprite.__init__(self)
@@ -97,6 +99,7 @@ def check_collision(ball, paddle, paddles, blocks):
             if block.rect.top < oldrect.top < block.rect.bottom < oldrect.bottom:
                 ball.rect.top = block.rect.bottom
                 ball.dy = -ball.dy
+
     if paddle_collided:
         (x1, y1) = (paddle.rect.left - ball.rect.width, ball.angle_left)
         (x2, y2) = (paddle.rect.right, ball.angle_right)
@@ -108,9 +111,9 @@ def check_collision(ball, paddle, paddles, blocks):
 
 def check_bound(obj_rect, scr_rect): #衝突チェック関数
     yoko,tate = +1,+1
-    if obj_rect.left < scr_rect.left or obj_rect.right > scr_rect.right:
+    if obj_rect.left == scr_rect.left or obj_rect.right == scr_rect.right:
         yoko = -1
-    if obj_rect.top < scr_rect.top:
+    if obj_rect.top == scr_rect.top:
         tate = -1
     return yoko, tate
 
