@@ -5,41 +5,6 @@ import sys
 
 from pygame.locals import *
 
-class BGM:
-    def __init__(self):
-        pygame.mixer.init(frequency = 44100)    # 初期設定
-        pygame.mixer.music.load("music/BGM.mp3")     # 音楽ファイルの読み込み
-        pygame.mixer.music.play(-1)   # 音楽の再生回数(無限)
-
-class Gameover_BGM:
-    def go_BG(self):
-        pygame.mixer.init(frequency = 44100)  
-        pygame.mixer.music.load("music/gameover.mp3")   
-        pygame.mixer.music.play()   # 音楽の再生
-
-class Victory_BGM:
-    def v_BG(self):
-        pygame.mixer.init(frequency = 44100)   
-        pygame.mixer.music.load("music/victory.mp3") 
-        pygame.mixer.music.play()   
-
-class Collision_BGM:
-    def cs_BG(self):
-        pygame.mixer.init(frequency = 44100)   
-        pygame.mixer.music.load("music/衝突.mp3")   
-        pygame.mixer.music.play()  
-
-class Time():
-    def __init__(self, x, y):
-        self.sysfont = pygame.font.SysFont(None, 20)
-        self.score = 0
-        (self.x, self.y) = (x, y)
-    def draw(self, screen):
-        img = self.sysfont.render("SCORE:"+str(self.score), True, (255,255,250))
-        screen.blit(img, (self.x, self.y))
-    def add_score(self, x):
-        self.score += x
-
 class Screen(pg.sprite.Sprite):
     def __init__(self, title, wh_pos:tuple, file_path):
         pg.sprite.Sprite.__init__(self)
@@ -113,6 +78,49 @@ class Block(pg.sprite.Sprite):
         self.rect.left = 5 + scrn.rect.left + x * self.rect.width
         self.rect.top = 5 + scrn.rect.top + y * self.rect.bottom
 
+class BGM: # BGMクラス
+    def __init__ (self):
+        pygame.mixer.init(frequency = 44100)    # 初期設定
+        pygame.mixer.music.load("music/BGM.mp3")     # 音楽ファイルの読み込み
+        pygame.mixer.music.set_volume(0.5)  # 音量設定
+        pygame.mixer.music.play(-1)   # -1でループ再生
+
+class Gameover_BGM: # ゲームオーバーBGMクラス
+    def __init__ (self):
+        pygame.mixer.init(frequency = 44100)  
+        pygame.mixer.music.load("music/gameover.mp3")   
+        pygame.mixer.music.set_volume(0.7)
+        pygame.mixer.music.play()   # 1回再生
+
+class Gameclear_BGM: # ゲームクリアBGMクラス
+    def __init__ (self):
+        pygame.mixer.init(frequency = 44100)   
+        pygame.mixer.music.load("music/gameclear.mp3") 
+        pygame.mixer.music.set_volume(0.7)
+        pygame.mixer.music.play()   
+
+class Collision_BGM: # 衝突BGMクラス
+    def __init__(self):
+        pygame.mixer.init(frequency = 44100)   
+        pygame.mixer.music.load("music/衝突.mp3") 
+        pygame.mixer.music.set_volume(0.7)  
+        pygame.mixer.music.play()  
+
+class Timer: # タイマークラス
+    def __init__(self, xy):
+        self.sfc = pg.Surface((80, 80))
+        self.sfc.set_colorkey((0, 0, 0))
+        self.rct = self.sfc.get_rect()
+        self.sysfont = pg.font.SysFont(None, 40)
+        self.x, self.y = xy
+
+    def up_score(self, value):
+        self.score += value
+
+    def blit(self, scrn:Screen):
+        img = self.sysfont.render("TIME:" + str(int(pg.time.get_ticks()/1000)), True, (0, 0, 0))
+        scrn.sfc.blit(img, (self.x, self.y))
+
 def check_collision(ball, paddle, paddles, blocks):
     blocks_collided = pg.sprite.spritecollide(ball, blocks, True)
     paddle_collided = pg.sprite.spritecollide(ball, paddles, False)
@@ -168,9 +176,9 @@ def main():
             blocks.add(black)
     ball = Ball(paddle, scrn)
     group.add(ball)
+    bgm = BGM()  # BGM再生
+    timer = Timer((480, 250))   # タイマーを画面(480, 250)に表示
     clock = pg.time.Clock()
-    bgm = BGM()
-    time = time(10, 10)   # タイムを画面(10, 10)に表示
 
     while True:
         scrn.bilt()
@@ -178,6 +186,7 @@ def main():
         group.update()        # 全てのスプライトグループを更新
         group.draw(scrn.sfc)    # 全てのスプライトグループを描画
         check_collision(ball, paddle, paddles, blocks)
+        timer.blit(scrn)
         pg.display.update()
 
         for event in pg.event.get():
