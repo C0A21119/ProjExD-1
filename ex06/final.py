@@ -6,7 +6,7 @@ import tkinter as tk
 from pygame.locals import *
 
 
-class Screen(pg.sprite.Sprite):#スクリーンクラス
+class Screen(pg.sprite.Sprite):#スクリーンクラス 山
     def __init__(self, title, wh_pos:tuple, file_path):
         pg.sprite.Sprite.__init__(self)
         pg.display.set_caption(title)
@@ -19,7 +19,7 @@ class Screen(pg.sprite.Sprite):#スクリーンクラス
         self.sfc.blit(self.bgi_sfc, self.bgi_rect)
 
 
-class Paddle(pg.sprite.Sprite):#パドルクラス
+class Paddle(pg.sprite.Sprite):#パドルクラス 山
     def __init__(self, scrn:Screen):
         pg.sprite.Sprite.__init__(self)
         #長方形の作成
@@ -37,7 +37,7 @@ class Paddle(pg.sprite.Sprite):#パドルクラス
         self.rect.clamp_ip(self.scrn)#画面外に出ていかないように
 
 
-class Ball(pg.sprite.Sprite):#ボールクラス
+class Ball(pg.sprite.Sprite):#ボールクラス 山
     speed = 5#スピード
     #反射角
     angle_left = 135
@@ -79,7 +79,7 @@ class Ball(pg.sprite.Sprite):#ボールクラス
         self.rect.clamp_ip(self.scrn)#画面外に出ないように
 
 
-class Block(pg.sprite.Sprite):#ブロッククラス
+class Block(pg.sprite.Sprite):#ブロッククラス 山
     def __init__(self, scrn:Screen, x, y):
         pg.sprite.Sprite.__init__(self)
         #長方形描画
@@ -92,7 +92,7 @@ class Block(pg.sprite.Sprite):#ブロッククラス
         self.rect.top = 5 + scrn.rect.top + y * self.rect.bottom
 
 
-class sub_screen():#サブスクリーンクラス
+class sub_screen():#サブスクリーンクラス 山
     #クリア画面
     def end(self, Score):
         root = tk.Tk()
@@ -110,7 +110,7 @@ class sub_screen():#サブスクリーンクラス
         root.mainloop()
 
 
-class Score():#スコアクラス
+class Score():#スコアクラス 山
     def __init__(self):
         self.font = pg.font.SysFont("arial", 30)#フォント設定
         self.score = 0
@@ -130,7 +130,7 @@ class Score():#スコアクラス
         self.score += x*10
 
 
-def check_collision(ball, paddle, paddles, blocks, score):#衝突判定
+def check_collision(ball, paddle, paddles, blocks, score):#衝突判定 山
     oldblocks = len(blocks)
     blocks_collided = pg.sprite.spritecollide(ball, blocks, True)#ボールとブロック
     paddle_collided = pg.sprite.spritecollide(ball, paddles, False)#ボールとパドル
@@ -166,7 +166,7 @@ def check_collision(ball, paddle, paddles, blocks, score):#衝突判定
         ball.dy = -ball.speed * math.sin(angle)
 
 
-def check_bound(obj_rect, scr_rect): #反射チェック関数
+def check_bound(obj_rect, scr_rect): #反射チェック関数 山
     yoko,tate = +1,+1
     if obj_rect.left == scr_rect.left or obj_rect.right == scr_rect.right:
         yoko = -1#反転
@@ -175,7 +175,7 @@ def check_bound(obj_rect, scr_rect): #反射チェック関数
     return yoko, tate
 
 
-def main():
+def main():# 山
     scrn = Screen("ブロック崩し", (600, 600), "fig/pg_bg.jpg")
     group = pg.sprite.OrderedUpdates()  # 描画用のスプライトグループ
     blocks = pg.sprite.Group()       # ブロック衝突判定用のスプライトグループ
