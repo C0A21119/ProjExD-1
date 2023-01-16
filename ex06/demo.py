@@ -6,11 +6,10 @@ import tkinter.messagebox as tkm
 import tkinter as tk
 
 from pygame.locals import *
-import tkinter.messagebox as tkm
 
 
-class Screen(pg.sprite.Sprite):#スクリーンクラス
-    def __init__(self, title, wh_pos:tuple, file_path):
+class Screen(pg.sprite.Sprite):#スクリーンクラス 山
+    def __init__(self, title, wh_pos:tuple, file_path):#初期設定
         pg.sprite.Sprite.__init__(self)
         pg.display.set_caption(title)
         self.sfc = pg.display.set_mode(wh_pos)
@@ -22,8 +21,8 @@ class Screen(pg.sprite.Sprite):#スクリーンクラス
         self.sfc.blit(self.bgi_sfc, self.bgi_rect)
 
 
-class Paddle(pg.sprite.Sprite):#パドルクラス
-    def __init__(self, scrn:Screen):
+class Paddle(pg.sprite.Sprite):#パドルクラス 山
+    def __init__(self, scrn:Screen):#初期設定
         pg.sprite.Sprite.__init__(self)
         #長方形の作成
         self.image = pg.Surface((100, 10))
@@ -39,14 +38,15 @@ class Paddle(pg.sprite.Sprite):#パドルクラス
         self.rect.centerx = pg.mouse.get_pos()[0]#マウスのx座標と同期する
         self.rect.clamp_ip(self.scrn)#画面外に出ていかないように
 
-class Ball(pg.sprite.Sprite):#ボールクラス
+
+class Ball(pg.sprite.Sprite):#ボールクラス 山
     speed = 5#スピード
     #反射角
     angle_left = 135
     angle_right = 45
     count = 3# 残基
 
-    def __init__(self, paddle, scrn:Screen):
+    def __init__(self, paddle, scrn:Screen):#初期設定
         pg.sprite.Sprite.__init__(self)
         #長方形の描画
         self.image = pg.Surface((20, 20))
@@ -63,18 +63,18 @@ class Ball(pg.sprite.Sprite):#ボールクラス
         self.count = 3 #残機
 
     def start(self):#初期座標
-        self.rect.centerx = pg.mouse.get_pos()[0]
+        self.rect.centerx = pg.mouse.get_pos()[0]#マウスのx座標に同期
         self.rect.bottom = self.paddle.rect.top
         if pg.mouse.get_pressed()[0] == 1:#左クリックで発射
             self.dx = 0
             self.dy = -self.speed
-            self.update = self.move
+            self.update = self.move#アップデート切り替え
 
-    def move(self):#移動関数
+    def move(self):#移動処理
         if self.rect.bottom == self.scrn.rect.bottom:#落ちた場合
             self.update = self.start
             Ball.count -= 1
-        yoko,tate = check_bound(self.rect, self.scrn.rect)#バウンドチェック
+        yoko,tate = check_bound(self.rect, self.scrn.rect)#反射チェック
 
         self.dx = self.dx * yoko
         self.dy = self.dy * tate
@@ -83,8 +83,17 @@ class Ball(pg.sprite.Sprite):#ボールクラス
         self.rect.clamp_ip(self.scrn)#画面外に出ないように
 
 
-class Block(pg.sprite.Sprite):#ブロッククラス
-    def __init__(self, scrn:Screen, x, y):
+def check_bound(obj_rect, scr_rect): #反射チェック関数 山
+    yoko,tate = +1,+1
+    if obj_rect.left == scr_rect.left or obj_rect.right == scr_rect.right:
+        yoko = -1#反転
+    if obj_rect.top == scr_rect.top:
+        tate = -1#反転
+    return yoko, tate
+
+
+class Block(pg.sprite.Sprite):#ブロッククラス 山
+    def __init__(self, scrn:Screen, x, y):#初期設定
         lst = ["red","blue","yellow","green","orange","violet"]
         pg.sprite.Sprite.__init__(self)
         #長方形描画
@@ -102,23 +111,19 @@ class Sub_screen(): #スタート画面
         root = tk.Tk()
         root.title("start")
         root.geometry("600x250")
-
         label = tk.Label(root,
                         text="ブロック崩しEX!!",
                         font=("",50)
                         )
         label.pack()
-
         label = tk.Label(root,
                         text=" ~ 目指せハイスコア!!! ~ ",
                         font=("",30)
                         )
         label.pack()
-
         #ルールボタン
         button = tk.Button(root, text="ルール", command=self.button_click)
         button.pack()
-
         label = tk.Label(root,
                         text=" 右上の×ボタンをクリックしてゲームスタート!! ",
                         font=("",20)
@@ -129,7 +134,7 @@ class Sub_screen(): #スタート画面
     def button_click(event):
         tkm.showwarning("ルール","マウスパッドをタップでスタート!ポインターを左右に動かしてボールをブロックにぶつけよう!!")
 
-    def end(self, Score, scrn):
+    def end(self, Score, scrn):#終了画面
         self.font = pg.font.SysFont(None,55)
         text = self.font.render("GAME OVER",True,(255,0,0))
         scrn.blit(text,(200, 300))
@@ -148,12 +153,13 @@ class Sub_screen(): #スタート画面
         label.pack()
         root.mainloop()
 
-def check_collision(balls, paddle, paddles, blocks, score, bgm):
+
+def check_collision(balls, paddle, paddles, blocks, score, bgm):#衝突チェック関数 山
     oldblocks = len(blocks)
-    for ball in balls:
+    for ball in balls:#各ボールに対して処理を実行
         blocks_collided = pg.sprite.spritecollide(ball, blocks, True)
         paddle_collided = pg.sprite.spritecollide(ball, paddles, False)
-        if blocks_collided:
+        if blocks_collided:#ボールがブロックにぶつかったら
             score.add(oldblocks - len(blocks))#スコア加算
             bgm.Collision_BGM()
             oldrect = ball.rect
@@ -175,7 +181,7 @@ def check_collision(balls, paddle, paddles, blocks, score, bgm):
                     ball.rect.top = block.rect.bottom
                     ball.dy = -ball.dy
 
-        if paddle_collided:
+        if paddle_collided:#ボールがパドルにぶつかったら
             (x1, y1) = (paddle.rect.left - ball.rect.width, ball.angle_left)
             (x2, y2) = (paddle.rect.right, ball.angle_right)
             x = ball.rect.left                          # ボールが当たった位置
@@ -184,8 +190,9 @@ def check_collision(balls, paddle, paddles, blocks, score, bgm):
             ball.dx = ball.speed * math.cos(angle)
             ball.dy = -ball.speed * math.sin(angle)
 
-class Score():#スコアクラス
-    def __init__(self):
+
+class Score():#スコアクラス 山
+    def __init__(self):#初期設定
         self.font = pg.font.SysFont("arial", 30)#フォント設定
         self.score = 0
         self.x = 10#x座標
@@ -228,8 +235,9 @@ class BGM: # BGMクラス
         self.collision_BGM.set_volume(0.7)
         self.collision_BGM.play()
 
+
 class Timer: # タイマークラス
-    def __init__(self, xy):
+    def __init__(self, xy):#初期設定
         self.sfc = pg.Surface((80, 80))
         self.sfc.set_colorkey((0, 0, 0))
         self.rct = self.sfc.get_rect()
@@ -244,16 +252,7 @@ class Timer: # タイマークラス
         scrn.sfc.blit(img, (self.x, self.y))
 
 
-def check_bound(obj_rect, scr_rect): #反射チェック関数
-    yoko,tate = +1,+1
-    if obj_rect.left == scr_rect.left or obj_rect.right == scr_rect.right:
-        yoko = -1#反転
-    if obj_rect.top == scr_rect.top:
-        tate = -1#反転
-    return yoko, tate
-
-
-def main():
+def main():# 山
     scrn = Screen("ブロック崩し", (600, 600), "fig/haikei.jpg")
     group = pg.sprite.OrderedUpdates()  # 描画用のスプライトグループ
     blocks = pg.sprite.Group()       # ブロック衝突判定用のスプライトグループ
@@ -268,7 +267,7 @@ def main():
             blocks.add(black)
 
     balls = []
-    for i in range(2):#ボール複数追加
+    for i in range(2):#ボール複数描写
         ball = Ball(paddle, scrn)
         balls.append(ball)
         group.add(ball)
@@ -301,22 +300,23 @@ def main():
             return
         #イベント判定
         for event in pg.event.get():
-            if event.type == QUIT:
+            if event.type == QUIT:#×ボタン
                 bgm.Gameover_BGM()
                 subscreen.end(score, scrn.sfc)
                 return
-            if event.type == KEYDOWN and event.key == K_ESCAPE:
+            if event.type == KEYDOWN and event.key == K_ESCAPE:#エスケープキー
                 bgm.Gameover_BGM()
                 subscreen.end(score, scrn.sfc)
                 return
-            if event.type == KEYDOWN and event.key == K_n:
+            if event.type == KEYDOWN and event.key == K_n:#Nキー
                 pg.quit()
                 pg.init()
                 main()
                 return
-            if event.type == KEYDOWN and event.key == K_SPACE:
+            if event.type == KEYDOWN and event.key == K_SPACE:#スペースキー
                 poseFlag = not poseFlag
         pg.display.update()
+
 
 if __name__ == "__main__":
     pg.init()
