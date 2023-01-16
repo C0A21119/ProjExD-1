@@ -98,7 +98,6 @@ class Block(pg.sprite.Sprite):#ブロッククラス
 
 
 class Sub_screen(): #スタート画面
-
     def start(self):
         root = tk.Tk()
         root.title("start")
@@ -117,9 +116,7 @@ class Sub_screen(): #スタート画面
         label.pack()
 
         #ルールボタン
-        def button_click():
-            tkm.showwarning("ルール","マウスパッドをタップでスタート!ポインターを左右に動かしてボールをブロックにぶつけよう!!")
-        button = tk.Button(root, text="ルール", command=button_click)
+        button = tk.Button(root, text="ルール", command=self.button_click)
         button.pack()
 
         label = tk.Label(root,
@@ -128,6 +125,9 @@ class Sub_screen(): #スタート画面
                         )
         label.pack()
         root.mainloop()
+
+    def button_click(event):
+        tkm.showwarning("ルール","マウスパッドをタップでスタート!ポインターを左右に動かしてボールをブロックにぶつけよう!!")
 
     def end(self, Score, scrn):
         self.font = pg.font.SysFont(None,55)
