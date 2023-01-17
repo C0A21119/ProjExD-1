@@ -316,10 +316,14 @@ def main():# 山
             for event in pg.event.get():
                 if event.type == KEYDOWN and event.key == K_SPACE:
                     poseFlag = not poseFlag
-        #ライフ判定orブロックが全て消えたら
-        if Ball.count == 0 or len(blocks) == 0:
-            bgm.Gameclear_BGM()
+        #ライフ判定
+        if Ball.count == 0:
+            bgm.Gameover_BGM()
             subscreen.end(score, scrn.sfc)
+            return
+        if len(blocks) == 0:#ブロックが全て消えたら
+            bgm.Gameclear_BGM()
+            subscreen.end()
             return
         #イベント判定
         for event in pg.event.get():
