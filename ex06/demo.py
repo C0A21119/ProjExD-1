@@ -4,6 +4,7 @@ import sys
 import random
 import tkinter.messagebox as tkm
 import tkinter as tk
+import time
 
 from pygame.locals import *
 
@@ -151,6 +152,7 @@ class Sub_screen(): #スタート画面 宮島
                         )
         label.pack()
         root.mainloop()
+        self.timerFlag = True
 
     def end(self, Score, scrn):#終了画面 赤嶺 山
         self.font = pg.font.SysFont(None,55)
@@ -265,12 +267,14 @@ class Timer: # タイマークラス 松永
     def up_score(self, value):
         self.score += value
 
-    def blit(self, scrn:Screen):
-        img = self.sysfont.render("TIME:" + str(int(pg.time.get_ticks()/1000)), True, (0, 0, 0))
+    def blit(self, scrn:Screen, backtime):
+        now_time = ((pg.time.get_ticks())/1000)
+        img = self.sysfont.render("TIME:" + str(int(now_time-backtime)), True, (0, 0, 0))
         scrn.sfc.blit(img, (self.x, self.y))
 
 
 def main():# 山
+    sttime = time.time()
     scrn = Screen("ブロック崩し", (600, 600), "fig/haikei.jpg")#背景画像 宮島
     group = pg.sprite.OrderedUpdates()  # 描画用のスプライトグループ
     blocks = pg.sprite.Group()       # ブロック衝突判定用のスプライトグループ
@@ -295,7 +299,8 @@ def main():# 山
     score = Score()#スコア
     poseFlag = False#ポーズフラグ
     bgm = BGM()  # BGM再生
-    timer = Timer((480, 250))# タイマーを画面(480, 250)に表示
+    edtime =time.time()
+    timer = Timer((480, 250)) # タイマーを画面(480, 250)に表示
     clock = pg.time.Clock()
 
     while True:
@@ -305,7 +310,7 @@ def main():# 山
         group.draw(scrn.sfc)    # 全てのスプライトグループを描画
         score.draw(Ball, scrn.sfc)    # スコアを描画
         check_collision(balls, paddle, paddles, blocks, score, bgm)#衝突判定
-        timer.blit(scrn) #タイマー描写
+        timer.blit(scrn, edtime-sttime)#タイマー描写
         #ポーズ判定
         while poseFlag:
             for event in pg.event.get():
