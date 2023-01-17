@@ -110,7 +110,7 @@ class Block(pg.sprite.Sprite):#ブロッククラス 山
         #長方形描画
         self.image = pg.Surface((40, 20))
         self.image.set_colorkey((0, 0, 0))
-        if judg > 0.9:#ランダムか星型か判定
+        if judg > 0.5:#ランダムか星型か判定
             pg.draw.rect(self.image, random.choice(lst), (0,0,30,10))
         else:
             if leststar[y][x] == 1:
