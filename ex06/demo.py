@@ -124,7 +124,7 @@ class Block(pg.sprite.Sprite):#ブロッククラス 山
         self.rect.top = 5 + scrn.rect.top + y * self.rect.bottom
 
 
-class Sub_screen(): #スタート画面
+class Sub_screen(): #スタート画面 宮島
     def start(self):
         root = tk.Tk()
         root.title("start")
@@ -271,7 +271,7 @@ class Timer: # タイマークラス
 
 
 def main():# 山
-    scrn = Screen("ブロック崩し", (600, 600), "fig/haikei.jpg")
+    scrn = Screen("ブロック崩し", (600, 600), "fig/haikei.jpg")#背景画像 宮島
     group = pg.sprite.OrderedUpdates()  # 描画用のスプライトグループ
     blocks = pg.sprite.Group()       # ブロック衝突判定用のスプライトグループ
     paddles = pg.sprite.Group()      #パドル衝突判定用のスプライトグループ
@@ -283,8 +283,8 @@ def main():# 山
         for y in range(0, 11):
             black = Block(scrn, x, y, judg)
             group.add(black)
-            blocks.add(black)
-    balls = []
+            blocks.add(blac
+    balls = []# 宮島　山
     for i in range(2):#ボール複数描写
         ball = Ball(paddle, scrn)
         balls.append(ball)
