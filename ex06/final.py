@@ -2,7 +2,6 @@ import pygame as pg
 import math
 import sys
 import random
-import tkinter.messagebox as tkm
 
 from pygame.locals import *
 
@@ -89,13 +88,6 @@ class sub_screen():
         self.font = pg.font.SysFont(None,55)
         text = self.font.render("GAME OVER",True,(0,0,0))
         screen.blit(text,(200, 300))
-        '''
-        while (1):
-        scrn.image.fill((0,0,0))                                   
-        text = font.render("TEST", True, (255,255,255)) 
-        screen.blit(text, [20, 100])
-        pg.display.update()
-        '''
 
 def check_collision(ball, paddle, paddles, blocks):
     blocks_collided = pg.sprite.spritecollide(ball, blocks, True)
@@ -165,13 +157,13 @@ def main():
         check_collision(ball, paddle, paddles, blocks)
         #subscreen.out(scrn.sfc)
         #pg.display.update()
-        print(ball.count)
         if ball.count <= 0:
             subscreen.out(scrn.sfc)
         pg.display.update()
-
+        
         if ball.count <= 0:
             pg.quit()
+        
 
         for event in pg.event.get():
             if event.type == QUIT:
@@ -185,3 +177,4 @@ if __name__ == "__main__":
     pg.init()
     main()
     
+    #赤嶺
