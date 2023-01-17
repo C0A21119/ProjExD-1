@@ -292,7 +292,6 @@ def main():# 山
         ball = Ball(paddle, scrn)
         balls.append(ball)
         group.add(ball)
-    clock = pg.time.Clock()
     subscreen = Sub_screen()
     subscreen.start()
     score = Score()#スコア
