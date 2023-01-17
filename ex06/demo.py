@@ -125,6 +125,9 @@ class Block(pg.sprite.Sprite):#ブロッククラス 山
 
 
 class Sub_screen(): #スタート画面 宮島
+    def button_click(event):
+        tkm.showwarning("ルール","マウスパッドをタップでスタート!ポインターを左右に動かしてボールをブロックにぶつけよう!!")
+
     def start(self):
         root = tk.Tk()
         root.title("start")
@@ -148,9 +151,6 @@ class Sub_screen(): #スタート画面 宮島
                         )
         label.pack()
         root.mainloop()
-
-    def button_click(event):
-        tkm.showwarning("ルール","マウスパッドをタップでスタート!ポインターを左右に動かしてボールをブロックにぶつけよう!!")
 
     def end(self, Score, scrn):#終了画面
         self.font = pg.font.SysFont(None,55)
@@ -284,7 +284,7 @@ def main():# 山
             black = Block(scrn, x, y, judg)
             group.add(black)
             blocks.add(black)
-    balls = []# 宮島　山
+    balls = []# 宮島
     for i in range(2):#ボール複数描写
         ball = Ball(paddle, scrn)
         balls.append(ball)
@@ -305,7 +305,7 @@ def main():# 山
         group.draw(scrn.sfc)    # 全てのスプライトグループを描画
         score.draw(Ball, scrn.sfc)    # スコアを描画
         check_collision(balls, paddle, paddles, blocks, score, bgm)#衝突判定
-        timer.blit(scrn)
+        timer.blit(scrn) #タイマー描写
         #ポーズ判定
         while poseFlag:
             for event in pg.event.get():
