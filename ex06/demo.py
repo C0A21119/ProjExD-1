@@ -283,7 +283,7 @@ def main():# 山
         for y in range(0, 11):
             black = Block(scrn, x, y, judg)
             group.add(black)
-            blocks.add(blac)
+            blocks.add(black)
     balls = []# 宮島　山
     for i in range(2):#ボール複数描写
         ball = Ball(paddle, scrn)
