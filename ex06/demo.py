@@ -164,43 +164,6 @@ class Sub_screen(): #サブスクリーンクラス
         root.mainloop()
 
 
-def check_collision(balls, paddle, paddles, blocks, score, bgm):#衝突チェック関数 山
-    oldblocks = len(blocks)
-    for ball in balls:#各ボールに対して処理を実行
-        blocks_collided = pg.sprite.spritecollide(ball, blocks, True)
-        paddle_collided = pg.sprite.spritecollide(ball, paddles, False)
-        if blocks_collided:#ボールがブロックにぶつかったら
-            score.add(oldblocks - len(blocks))#スコア加算
-            bgm.Collision_BGM()
-            oldrect = ball.rect
-            for block in blocks_collided:
-                # ボールが左から衝突
-                if oldrect.left < block.rect.left < oldrect.right < block.rect.right:
-                    ball.rect.right = block.rect.left
-                    ball.dx = -ball.dx
-                # ボールが右から衝突
-                if block.rect.left < oldrect.left < block.rect.right < oldrect.right:
-                    ball.rect.left = block.rect.right
-                    ball.dx = -ball.dx
-                # ボールが上から衝突
-                if oldrect.top < block.rect.top < oldrect.bottom < block.rect.bottom:
-                    ball.rect.bottom = block.rect.top
-                    ball.dy = -ball.dy
-                # ボールが下から衝突
-                if block.rect.top < oldrect.top < block.rect.bottom < oldrect.bottom:
-                    ball.rect.top = block.rect.bottom
-                    ball.dy = -ball.dy
-
-        if paddle_collided:#ボールがパドルにぶつかったら
-            (x1, y1) = (paddle.rect.left - ball.rect.width, ball.angle_left)
-            (x2, y2) = (paddle.rect.right, ball.angle_right)
-            x = ball.rect.left                          # ボールが当たった位置
-            y = (float(y2-y1)/(x2-x1)) * (x - x1) + y1  # 線形補間
-            angle = math.radians(y)                     # 反射角度
-            ball.dx = ball.speed * math.cos(angle)
-            ball.dy = -ball.speed * math.sin(angle)
-
-
 class Score():#スコアクラス 山
     def __init__(self):#初期設定
         self.font = pg.font.SysFont("arial", 30)#フォント設定
@@ -246,15 +209,6 @@ class BGM: # BGMクラス 松永
         self.collision_BGM.play()
 
 
-def check_bound(obj_rect, scr_rect): #反射チェック関数 山
-    yoko,tate = +1,+1
-    if obj_rect.left == scr_rect.left or obj_rect.right == scr_rect.right:
-        yoko = -1#反転
-    if obj_rect.top == scr_rect.top:
-        tate = -1#反転
-    return yoko, tate
-
-
 class Timer: # タイマークラス 松永
     def __init__(self, xy):#初期設定
         self.sfc = pg.Surface((80, 80))
@@ -270,6 +224,52 @@ class Timer: # タイマークラス 松永
         now_time = ((pg.time.get_ticks())/1000)
         img = self.sysfont.render("TIME:" + str(int(now_time-backtime)), True, (0, 0, 0))
         scrn.sfc.blit(img, (self.x, self.y))
+
+
+def check_collision(balls, paddle, paddles, blocks, score, bgm):#衝突チェック関数 山
+    oldblocks = len(blocks)
+    for ball in balls:#各ボールに対して処理を実行
+        blocks_collided = pg.sprite.spritecollide(ball, blocks, True)
+        paddle_collided = pg.sprite.spritecollide(ball, paddles, False)
+        if blocks_collided:#ボールがブロックにぶつかったら
+            score.add(oldblocks - len(blocks))#スコア加算
+            bgm.Collision_BGM()
+            oldrect = ball.rect
+            for block in blocks_collided:
+                # ボールが左から衝突
+                if oldrect.left < block.rect.left < oldrect.right < block.rect.right:
+                    ball.rect.right = block.rect.left
+                    ball.dx = -ball.dx
+                # ボールが右から衝突
+                if block.rect.left < oldrect.left < block.rect.right < oldrect.right:
+                    ball.rect.left = block.rect.right
+                    ball.dx = -ball.dx
+                # ボールが上から衝突
+                if oldrect.top < block.rect.top < oldrect.bottom < block.rect.bottom:
+                    ball.rect.bottom = block.rect.top
+                    ball.dy = -ball.dy
+                # ボールが下から衝突
+                if block.rect.top < oldrect.top < block.rect.bottom < oldrect.bottom:
+                    ball.rect.top = block.rect.bottom
+                    ball.dy = -ball.dy
+
+        if paddle_collided:#ボールがパドルにぶつかったら
+            (x1, y1) = (paddle.rect.left - ball.rect.width, ball.angle_left)
+            (x2, y2) = (paddle.rect.right, ball.angle_right)
+            x = ball.rect.left                          # ボールが当たった位置
+            y = (float(y2-y1)/(x2-x1)) * (x - x1) + y1  # 線形補間
+            angle = math.radians(y)                     # 反射角度
+            ball.dx = ball.speed * math.cos(angle)
+            ball.dy = -ball.speed * math.sin(angle)
+
+
+def check_bound(obj_rect, scr_rect): #反射チェック関数 山
+    yoko,tate = +1,+1
+    if obj_rect.left == scr_rect.left or obj_rect.right == scr_rect.right:
+        yoko = -1#反転
+    if obj_rect.top == scr_rect.top:
+        tate = -1#反転
+    return yoko, tate
 
 
 def main():# 山
