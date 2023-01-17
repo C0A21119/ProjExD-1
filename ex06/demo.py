@@ -92,7 +92,7 @@ def check_bound(obj_rect, scr_rect): #反射チェック関数 山
     return yoko, tate
 
 
-class Block(pg.sprite.Sprite):#ブロッククラス 山
+class Block(pg.sprite.Sprite):#ブロッククラス 山 赤嶺
     def __init__(self, scrn:Screen, x, y, judg):#初期設定
         lst = ["red","blue","yellow","green","orange","violet"]#ランダムカラー用リスト
         leststar = [[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],#星型カラーリスト
@@ -152,7 +152,7 @@ class Sub_screen(): #スタート画面 宮島
         label.pack()
         root.mainloop()
 
-    def end(self, Score, scrn):#終了画面
+    def end(self, Score, scrn):#終了画面 赤嶺 山
         self.font = pg.font.SysFont(None,55)
         text = self.font.render("GAME OVER",True,(255,0,0))
         scrn.blit(text,(200, 300))
@@ -254,7 +254,7 @@ class BGM: # BGMクラス 松永
         self.collision_BGM.play()
 
 
-class Timer: # タイマークラス
+class Timer: # タイマークラス 松永
     def __init__(self, xy):#初期設定
         self.sfc = pg.Surface((80, 80))
         self.sfc.set_colorkey((0, 0, 0))
