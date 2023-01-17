@@ -94,8 +94,8 @@ def check_bound(obj_rect, scr_rect): #反射チェック関数 山
 
 class Block(pg.sprite.Sprite):#ブロッククラス 山
     def __init__(self, scrn:Screen, x, y, judg):#初期設定
-        lst = ["red","blue","yellow","green","orange","violet"]
-        leststar = [[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
+        lst = ["red","blue","yellow","green","orange","violet"]#ランダムカラー用リスト
+        leststar = [[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],#星型カラーリスト
                     [0,0,0,0,0,0,1,0,1,0,0,0,0,0,0],
                     [0,0,0,0,0,1,0,0,0,1,0,0,0,0,0],
                     [0,1,1,1,1,0,0,0,0,0,1,1,1,1,0],
@@ -110,7 +110,7 @@ class Block(pg.sprite.Sprite):#ブロッククラス 山
         #長方形描画
         self.image = pg.Surface((40, 20))
         self.image.set_colorkey((0, 0, 0))
-        if judg > 0.9:
+        if judg > 0.9:#ランダムか星型か判定
             pg.draw.rect(self.image, random.choice(lst), (0,0,30,10))
         else:
             if leststar[y][x] == 1:
