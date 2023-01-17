@@ -187,10 +187,10 @@ class Score():#スコアクラス 山
 class BGM: # BGMクラス 松永
     def __init__ (self):# 初期設定
         pg.mixer.init(frequency = 44100)
-        self.bgm = pg.mixer.Sound("music/BGM.mp3")     # 音楽ファイルの読み込み
-        self.gameover_BGM = pg.mixer.Sound("music/gameover.mp3")
-        self.gameclear_BGM = pg.mixer.Sound("music/gameclear.mp3")
-        self.collision_BGM = pg.mixer.Sound("music/衝突.mp3")
+        self.bgm = pg.mixer.Sound("ex06/music/BGM.mp3")     # 音楽ファイルの読み込み
+        self.gameover_BGM = pg.mixer.Sound("ex06/music/gameover.mp3")
+        self.gameclear_BGM = pg.mixer.Sound("ex06/music/gameclear.mp3")
+        self.collision_BGM = pg.mixer.Sound("ex06/music/衝突.mp3")
         self.bgm.set_volume(0.5)  # 音量設定
         self.bgm.play(-1)   # -1でループ再生
 
@@ -274,7 +274,7 @@ def check_bound(obj_rect, scr_rect): #反射チェック関数 山
 
 def main():# 山
     sttime = time.time()
-    scrn = Screen("ブロック崩し", (600, 600), "fig/haikei.jpg")#背景画像 宮島
+    scrn = Screen("ブロック崩し", (600, 600), "ex06/fig/haikei.jpg")#背景画像 宮島
     group = pg.sprite.OrderedUpdates()  # 描画用のスプライトグループ
     blocks = pg.sprite.Group()       # ブロック衝突判定用のスプライトグループ
     paddles = pg.sprite.Group()      #パドル衝突判定用のスプライトグループ
