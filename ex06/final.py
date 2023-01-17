@@ -42,7 +42,7 @@ class Ball(pg.sprite.Sprite):#ボールクラス 山
     angle_left = 135
     angle_right = 45
 
-    def __init__(self, paddle, scrn:Screen):
+    def __init__(self, paddle, scrn:Screen):#初期設定
         pg.sprite.Sprite.__init__(self)
         self.image = pg.Surface((20, 20))
         self.image.set_colorkey((0, 0, 0))
@@ -54,7 +54,7 @@ class Ball(pg.sprite.Sprite):#ボールクラス 山
         self.dx = 0 # ボールの速度
         self.dy = 0
 
-    def start(self):
+    def start(self):#発射前
         self.rect.centerx = pg.mouse.get_pos()[0]
         self.rect.bottom = self.paddle.rect.top
         if pg.mouse.get_pressed()[0] == 1:
@@ -62,7 +62,7 @@ class Ball(pg.sprite.Sprite):#ボールクラス 山
             self.dy = -self.speed
             self.update = self.move
 
-    def move(self):
+    def move(self):#発射後
         if self.rect.bottom == self.scrn.rect.bottom:
             self.update = self.start
         yoko,tate = check_bound(self.rect, self.scrn.rect)
@@ -74,7 +74,7 @@ class Ball(pg.sprite.Sprite):#ボールクラス 山
 
 
 class Block(pg.sprite.Sprite):#ブロッククラス 山
-    def __init__(self, scrn:Screen, x, y):
+    def __init__(self, scrn:Screen, x, y):#初期設定
         pg.sprite.Sprite.__init__(self)
         self.image = pg.Surface((40, 20))
         self.image.set_colorkey((0, 0, 0))
