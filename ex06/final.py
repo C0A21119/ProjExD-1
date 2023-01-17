@@ -1,11 +1,15 @@
 import pygame as pg
+import pygame.mixer
 import math
 import sys
 import random
+import tkinter as tk
+
 
 from pygame.locals import *
 
-class Screen(pg.sprite.Sprite):
+
+class Screen(pg.sprite.Sprite):#スクリーンクラス 山
     def __init__(self, title, wh_pos:tuple, file_path):
         pg.sprite.Sprite.__init__(self)
         pg.display.set_caption(title)
@@ -17,7 +21,8 @@ class Screen(pg.sprite.Sprite):
     def bilt(self):
         self.sfc.blit(self.bgi_sfc, self.bgi_rect)
 
-class Paddle(pg.sprite.Sprite):
+
+class Paddle(pg.sprite.Sprite):#パドルクラス 山
     def __init__(self, scrn:Screen):
         pg.sprite.Sprite.__init__(self)
         self.image = pg.Surface((100, 10))
@@ -33,12 +38,14 @@ class Paddle(pg.sprite.Sprite):
         self.rect.centerx = pg.mouse.get_pos()[0]
         self.rect.clamp_ip(self.scrn)
 
-class Ball(pg.sprite.Sprite):
-    speed = 5
+
+class Ball(pg.sprite.Sprite):#ボールクラス 山
+    speed = 5#スピード
+    #反射角
     angle_left = 135
     angle_right = 45
 
-    def __init__(self, paddle, scrn:Screen):
+    def __init__(self, paddle, scrn:Screen):#初期設定
         pg.sprite.Sprite.__init__(self)
         self.image = pg.Surface((20, 20))
         self.image.set_colorkey((0, 0, 0))
@@ -49,9 +56,8 @@ class Ball(pg.sprite.Sprite):
         self.scrn = scrn
         self.dx = 0 # ボールの速度
         self.dy = 0
-        self.count = 3 #残機
 
-    def start(self):
+    def start(self):#発射前
         self.rect.centerx = pg.mouse.get_pos()[0]
         self.rect.bottom = self.paddle.rect.top
         if pg.mouse.get_pressed()[0] == 1:
@@ -59,25 +65,23 @@ class Ball(pg.sprite.Sprite):
             self.dy = -self.speed
             self.update = self.move
 
-    def move(self):
+    def move(self):#発射後
         if self.rect.bottom == self.scrn.rect.bottom:
             self.update = self.start
-            self.count -= 1
         yoko,tate = check_bound(self.rect, self.scrn.rect)
         self.dx = self.dx * yoko
         self.dy = self.dy * tate
         self.rect.centerx += self.dx
         self.rect.centery += self.dy
         self.rect.clamp_ip(self.scrn)
-        
 
-class Block(pg.sprite.Sprite):
-    def __init__(self, scrn:Screen, x, y):
-        lst = ["red","blue","yellow","green","orange","violet"]
+
+class Block(pg.sprite.Sprite):#ブロッククラス 山
+    def __init__(self, scrn:Screen, x, y):#初期設定
         pg.sprite.Sprite.__init__(self)
         self.image = pg.Surface((40, 20))
         self.image.set_colorkey((0, 0, 0))
-        pg.draw.rect(self.image, random.choice(lst), (0,0,30,10))
+        pg.draw.rect(self.image, "blue", (0,0,30,10))
         self.rect = self.image.get_rect()
         self.rect.left = 5 + scrn.rect.left + x * self.rect.width
         self.rect.top = 5 + scrn.rect.top + y * self.rect.bottom
@@ -89,10 +93,59 @@ class sub_screen():
         text = self.font.render("GAME OVER",True,(0,0,0))
         screen.blit(text,(200, 300))
 
-def check_collision(ball, paddle, paddles, blocks):
-    blocks_collided = pg.sprite.spritecollide(ball, blocks, True)
-    paddle_collided = pg.sprite.spritecollide(ball, paddles, False)
-    if blocks_collided:
+class sub_screen():#サブスクリーンクラス 山
+    #クリア画面
+    def end(self, Score):
+        root = tk.Tk()
+        root.title("お疲れ様")
+        root.geometry("300x100")
+        score = Score.score
+        if score > Score.HISCORE:#ハイスコア判定と書き込み
+            with open('ex06/text.txt', mode="w", encoding="UTF-8") as file:
+                file.write(f"{score}")
+        label = tk.Label(root,
+                        text=f"お疲れ様{score}点だよ\n前回までのハイスコアは\n{Score.HISCORE}点だよ",
+                        font=("", 20)
+                        )
+        label.pack()
+        root.mainloop()
+
+class Gameclear_BGM: # ゲームクリアBGMクラス
+    def __init__ (self):
+        pygame.mixer.init(frequency = 44100)   
+        pygame.mixer.music.load("music/gameclear.mp3") 
+        pygame.mixer.music.set_volume(0.7)
+        pygame.mixer.music.play()   
+
+class Score():#スコアクラス 山
+    def __init__(self):
+        pygame.mixer.init(frequency = 44100)   
+        pygame.mixer.music.load("music/衝突.mp3") 
+        pygame.mixer.music.set_volume(0.7)  
+        pygame.mixer.music.play()  
+
+class Timer: # タイマークラス
+    def __init__(self, xy):
+        self.sfc = pg.Surface((80, 80))
+        self.sfc.set_colorkey((0, 0, 0))
+        self.rct = self.sfc.get_rect()
+        self.sysfont = pg.font.SysFont(None, 40)
+        self.x, self.y = xy
+
+    def up_score(self, value):
+        self.score += value
+
+    def blit(self, scrn:Screen):
+        img = self.sysfont.render("TIME:" + str(int(pg.time.get_ticks()/1000)), True, (0, 0, 0))
+        scrn.sfc.blit(img, (self.x, self.y))
+
+def check_collision(ball, paddle, paddles, blocks, score):#衝突判定 山
+    oldblocks = len(blocks)
+    blocks_collided = pg.sprite.spritecollide(ball, blocks, True)#ボールとブロック
+    paddle_collided = pg.sprite.spritecollide(ball, paddles, False)#ボールとパドル
+
+    if blocks_collided:#ブロック衝突処理
+        score.add(oldblocks - len(blocks))#スコア加算
         oldrect = ball.rect
         for block in blocks_collided:
             # ボールが左から衝突
@@ -121,7 +174,8 @@ def check_collision(ball, paddle, paddles, blocks):
         ball.dx = ball.speed * math.cos(angle)
         ball.dy = -ball.speed * math.sin(angle)
 
-def check_bound(obj_rect, scr_rect): #衝突チェック関数
+
+def check_bound(obj_rect, scr_rect): #反射チェック関数 山
     yoko,tate = +1,+1
     if obj_rect.left == scr_rect.left or obj_rect.right == scr_rect.right:
         yoko = -1
@@ -130,7 +184,7 @@ def check_bound(obj_rect, scr_rect): #衝突チェック関数
     return yoko, tate
 
 
-def main():
+def main():# 山
     scrn = Screen("ブロック崩し", (600, 600), "fig/pg_bg.jpg")
     group = pg.sprite.OrderedUpdates()  # 描画用のスプライトグループ
     blocks = pg.sprite.Group()       # 衝突判定用のスプライトグループ
@@ -145,9 +199,9 @@ def main():
             blocks.add(black)
     ball = Ball(paddle, scrn)
     group.add(ball)
+    bgm = BGM()  # BGM再生
+    timer = Timer((480, 250))   # タイマーを画面(480, 250)に表示
     clock = pg.time.Clock()
-    subscreen = sub_screen()
-    
 
     while True:
         scrn.bilt()
