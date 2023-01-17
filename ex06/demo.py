@@ -211,9 +211,9 @@ class Score():#スコアクラス 山
         self.score += x*10
 
 
-class BGM: # BGMクラス
-    def __init__ (self):
-        pg.mixer.init(frequency = 44100)    # 初期設定
+class BGM: # BGMクラス 松永
+    def __init__ (self):# 初期設定
+        pg.mixer.init(frequency = 44100)
         self.bgm = pg.mixer.Sound("music/BGM.mp3")     # 音楽ファイルの読み込み
         self.gameover_BGM = pg.mixer.Sound("music/gameover.mp3")
         self.gameclear_BGM = pg.mixer.Sound("music/gameclear.mp3")
