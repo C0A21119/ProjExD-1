@@ -93,13 +93,31 @@ def check_bound(obj_rect, scr_rect): #反射チェック関数 山
 
 
 class Block(pg.sprite.Sprite):#ブロッククラス 山
-    def __init__(self, scrn:Screen, x, y):#初期設定
+    def __init__(self, scrn:Screen, x, y, judg):#初期設定
         lst = ["red","blue","yellow","green","orange","violet"]
+        leststar = [[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,1,0,1,0,0,0,0,0,0],
+                    [0,0,0,0,0,1,0,0,0,1,0,0,0,0,0],
+                    [0,1,1,1,1,0,0,0,0,0,1,1,1,1,0],
+                    [0,0,1,0,0,0,0,0,0,0,0,0,1,0,0],
+                    [0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],
+                    [0,0,0,0,1,0,0,1,0,0,1,0,0,0,0],
+                    [0,0,0,1,0,0,1,0,1,0,0,1,0,0,0],
+                    [0,0,1,0,1,1,0,0,0,1,1,0,1,0,0],
+                    [0,1,1,1,0,0,0,0,0,0,0,1,1,1,0],
+                    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
         pg.sprite.Sprite.__init__(self)
         #長方形描画
         self.image = pg.Surface((40, 20))
         self.image.set_colorkey((0, 0, 0))
-        pg.draw.rect(self.image, random.choice(lst), (0,0,30,10))
+        if judg > 0.9:
+            pg.draw.rect(self.image, random.choice(lst), (0,0,30,10))
+        else:
+            if leststar[y][x] == 1:
+                colours = "red"
+            else:
+                colours = "white"
+            pg.draw.rect(self.image, colours, (0,0,30,10))
         self.rect = self.image.get_rect()
         #描画位置設定
         self.rect.left = 5 + scrn.rect.left + x * self.rect.width
@@ -260,12 +278,12 @@ def main():# 山
     paddle = Paddle(scrn)#パドル描画
     group.add(paddle)
     paddles.add(paddle)
+    judg = random.random()
     for x in range(0, 15):#ブロック描画
         for y in range(0, 11):
-            black = Block(scrn, x, y)
+            black = Block(scrn, x, y, judg)
             group.add(black)
             blocks.add(black)
-
     balls = []
     for i in range(2):#ボール複数描写
         ball = Ball(paddle, scrn)
