@@ -126,10 +126,10 @@ class Block(pg.sprite.Sprite):#ブロッククラス 山 赤嶺
 
 
 class Sub_screen(): #サブスクリーンクラス
-    def button_click(event):#スタート画面 宮島
+    def button_click(event):#ボタンクリック
         tkm.showwarning("ルール","マウスパッドをタップでスタート!ポインターを左右に動かしてボールをブロックにぶつけよう!!")
 
-    def start(self):
+    def start(self):#スタート画面 宮島
         root = tk.Tk()
         root.title("start")
         root.geometry("600x250")
@@ -152,7 +152,6 @@ class Sub_screen(): #サブスクリーンクラス
                         )
         label.pack()
         root.mainloop()
-        self.timerFlag = True
 
     def end(self, Score, scrn):#終了画面 赤嶺 山
         self.font = pg.font.SysFont(None,55)
