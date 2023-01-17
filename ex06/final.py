@@ -2,6 +2,9 @@ import pygame as pg
 import pygame.mixer
 import math
 import sys
+import random
+import tkinter as tk
+
 
 from pygame.locals import *
 
@@ -83,12 +86,12 @@ class Block(pg.sprite.Sprite):#ブロッククラス 山
         self.rect.left = 5 + scrn.rect.left + x * self.rect.width
         self.rect.top = 5 + scrn.rect.top + y * self.rect.bottom
 
-class BGM: # BGMクラス
-    def __init__ (self):
-        pygame.mixer.init(frequency = 44100)    # 初期設定
-        pygame.mixer.music.load("music/BGM.mp3")     # 音楽ファイルの読み込み
-        pygame.mixer.music.set_volume(0.5)  # 音量設定
-        pygame.mixer.music.play(-1)   # -1でループ再生
+class sub_screen():
+    def out(self,screen):
+        #bg_sfc = pg.image.load("fig/pg_bg.jpg")
+        self.font = pg.font.SysFont(None,55)
+        text = self.font.render("GAME OVER",True,(0,0,0))
+        screen.blit(text,(200, 300))
 
 class sub_screen():#サブスクリーンクラス 山
     #クリア画面
@@ -206,8 +209,15 @@ def main():# 山
         group.update()        # 全てのスプライトグループを更新
         group.draw(scrn.sfc)    # 全てのスプライトグループを描画
         check_collision(ball, paddle, paddles, blocks)
-        timer.blit(scrn)
+        #subscreen.out(scrn.sfc)
+        #pg.display.update()
+        if ball.count <= 0:
+            subscreen.out(scrn.sfc)
         pg.display.update()
+        
+        if ball.count <= 0:
+            pg.quit()
+        
 
         for event in pg.event.get():
             if event.type == QUIT:
@@ -220,3 +230,5 @@ def main():# 山
 if __name__ == "__main__":
     pg.init()
     main()
+    
+    #赤嶺

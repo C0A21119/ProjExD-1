@@ -112,7 +112,7 @@ class Block(pg.sprite.Sprite):#ブロッククラス 山 赤嶺
         self.image = pg.Surface((40, 20))
         self.image.set_colorkey((0, 0, 0))
         if judg > 0.5:#ランダムか星型か判定
-            pg.draw.rect(self.image, random.choice(lst), (0,0,30,10))
+            pg.draw.rect(self.image, random.choice(lst), (0,0,30,10)) #lstからrandom choiceで色を取得する
         else:
             if leststar[y][x] == 1:
                 colours = "red"
@@ -155,7 +155,7 @@ class Sub_screen(): #サブスクリーンクラス
 
     def end(self, Score, scrn):#終了画面 赤嶺 山
         self.font = pg.font.SysFont(None,55)
-        text = self.font.render("GAME OVER",True,(255,0,0))
+        text = self.font.render("GAME OVER",True,(255,0,0)) #ゲームオーバーと表示
         scrn.blit(text,(200, 300))
         pg.display.update()
         root = tk.Tk()
