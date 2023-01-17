@@ -125,8 +125,8 @@ class Block(pg.sprite.Sprite):#ブロッククラス 山 赤嶺
         self.rect.top = 5 + scrn.rect.top + y * self.rect.bottom
 
 
-class Sub_screen(): #スタート画面 宮島
-    def button_click(event):
+class Sub_screen(): #サブスクリーンクラス
+    def button_click(event):#スタート画面 宮島
         tkm.showwarning("ルール","マウスパッドをタップでスタート!ポインターを左右に動かしてボールをブロックにぶつけよう!!")
 
     def start(self):
