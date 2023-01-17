@@ -84,15 +84,6 @@ class Ball(pg.sprite.Sprite):#ボールクラス 山
         self.rect.clamp_ip(self.scrn)#画面外に出ないように
 
 
-def check_bound(obj_rect, scr_rect): #反射チェック関数 山
-    yoko,tate = +1,+1
-    if obj_rect.left == scr_rect.left or obj_rect.right == scr_rect.right:
-        yoko = -1#反転
-    if obj_rect.top == scr_rect.top:
-        tate = -1#反転
-    return yoko, tate
-
-
 class Block(pg.sprite.Sprite):#ブロッククラス 山 赤嶺
     def __init__(self, scrn:Screen, x, y, judg):#初期設定
         lst = ["red","blue","yellow","green","orange","violet"]#ランダムカラー用リスト
@@ -253,6 +244,15 @@ class BGM: # BGMクラス 松永
     def Collision_BGM(self): # 衝突BGM
         self.collision_BGM.set_volume(0.7)
         self.collision_BGM.play()
+
+
+def check_bound(obj_rect, scr_rect): #反射チェック関数 山
+    yoko,tate = +1,+1
+    if obj_rect.left == scr_rect.left or obj_rect.right == scr_rect.right:
+        yoko = -1#反転
+    if obj_rect.top == scr_rect.top:
+        tate = -1#反転
+    return yoko, tate
 
 
 class Timer: # タイマークラス 松永
