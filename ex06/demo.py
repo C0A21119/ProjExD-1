@@ -318,8 +318,8 @@ def main():# 山
                     poseFlag = not poseFlag
         #ライフ判定orブロックが全て消えたら
         if Ball.count == 0 or len(blocks) == 0:
-            subscreen.end(score, scrn.sfc)
             bgm.Gameclear_BGM()
+            subscreen.end(score, scrn.sfc)
             return
         #イベント判定
         for event in pg.event.get():
