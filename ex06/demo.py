@@ -295,7 +295,7 @@ def main():# 山
     score = Score()#スコア
     poseFlag = False#ポーズフラグ
     bgm = BGM()  # BGM再生
-    timer = Timer((480, 250))   # タイマーを画面(480, 250)に表示
+    timer = Timer((480, 250))# タイマーを画面(480, 250)に表示
     clock = pg.time.Clock()
 
     while True:
